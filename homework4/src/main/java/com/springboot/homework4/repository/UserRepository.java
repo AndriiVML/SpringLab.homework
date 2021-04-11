@@ -5,7 +5,7 @@ import com.springboot.homework4.model.entity.User;
 import java.util.List;
 
 public interface UserRepository {
-    User getUserByLogin(String login);
+    User getUser(String login);
 
     List<User> getAllUsers();
 

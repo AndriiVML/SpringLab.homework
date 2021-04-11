@@ -17,11 +17,11 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public User getUserByLogin(String login) {
+    public User getUser(String login) {
         return list.stream()
                 .filter(u -> u.getLogin().equals(login))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Not found account by login  = " + login));
+                .orElseThrow(() -> new RuntimeException("Not found account with login = " + login));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User createUser(User user) {
         if (list.contains(user)) {
-            throw new RuntimeException("User is already created.");
+            throw new RuntimeException("User's already created.");
         }
         try {
             createAccount(user);
@@ -88,7 +88,7 @@ public class UserRepositoryImpl implements UserRepository {
         User user = list.stream()
                 .filter(u -> u.getLogin().equals(login))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Not found user by login = " + login));
+                .orElseThrow(() -> new RuntimeException("Not found user with login = " + login));
         boolean isBlocked = user.isBlocked();
 
         user.setBlocked(!isBlocked);

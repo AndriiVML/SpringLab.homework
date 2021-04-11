@@ -56,7 +56,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public UserRegisterDto createUser(@RequestBody UserRegisterDto userRegisterDto) {
-        System.out.println("\n\n\ninside POST MAPPING\n\n");
         return userService.createUser(userRegisterDto);
     }
 

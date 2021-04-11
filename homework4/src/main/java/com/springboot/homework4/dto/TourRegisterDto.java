@@ -9,13 +9,12 @@ import java.math.BigDecimal;
 
 @Data
 @Builder
-public class TourDto {
+public class TourRegisterDto {
     private long id;
     private String tourName;
     private BigDecimal price;
     private int numberOfTours;
     private int numberOfParticipants;
-    private boolean isHot;
     private HotelType hotelType;
     private TourType tourType;
 }
