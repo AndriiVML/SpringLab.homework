@@ -118,6 +118,7 @@ public class TourController {
         return tourService.updateTour(id, tourDto);
     }
 
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteTour(@PathVariable long id) {
         tourService.deleteTour(id);

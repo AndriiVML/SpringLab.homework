@@ -1,6 +1,6 @@
 package com.springboot.homework4.service.impl;
 
-import com.springboot.homework4.Util;
+import com.springboot.homework4.util.Util;
 import com.springboot.homework4.dto.UserDto;
 import com.springboot.homework4.dto.UserRegisterDto;
 import com.springboot.homework4.model.entity.User;
@@ -27,7 +27,6 @@ public class UserServiceImpl implements UserService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
-                .discount(user.getDiscount())
                 .isBlocked(user.isBlocked())
                 .build();
     }
@@ -110,6 +109,7 @@ public class UserServiceImpl implements UserService {
         log.info("user with login = " + login + " updated: " + user);
         return mapUserToUserDto(user);
     }
+
 
 
 }

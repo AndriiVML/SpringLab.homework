@@ -1,6 +1,6 @@
 package com.springboot.homework4.service.impl;
 
-import com.springboot.homework4.Util;
+import com.springboot.homework4.util.Util;
 import com.springboot.homework4.dto.TourDto;
 import com.springboot.homework4.dto.TourRegisterDto;
 import com.springboot.homework4.model.entity.Tour;

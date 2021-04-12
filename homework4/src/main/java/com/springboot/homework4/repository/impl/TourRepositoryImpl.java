@@ -34,11 +34,7 @@ public class TourRepositoryImpl implements TourRepository {
 
     @Override
     public Tour createTour(Tour tour) {
-        Tour tour1 = getTour(tour.getId());
-        if (tour.equals(tour1)) {
-            log.error("Unsuccessful attempt to create tour. Tour's already created: " + tour);
-            throw new RuntimeException("Tour is already registered.");
-        }
+        //need to add some check
         list.add(tour);
         return tour;
     }
@@ -70,17 +66,6 @@ public class TourRepositoryImpl implements TourRepository {
         tour.setDeleted(true);
         list.add(tour);
 
-    }
-
-    @Override
-    public Tour changeHotStatus(long id) {
-        Tour tour = list.stream()
-                .filter(t -> t.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Not found tour with id = " + id));
-        boolean isHot = tour.isHot();
-        tour.setHot(!isHot);
-        return tour;
     }
 
 

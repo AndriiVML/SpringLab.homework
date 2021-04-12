@@ -15,5 +15,4 @@ public interface TourRepository {
 
     void deleteTour(long id);
 
-    Tour changeHotStatus(long id);
 }

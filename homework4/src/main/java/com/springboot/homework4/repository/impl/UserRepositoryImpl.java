@@ -1,5 +1,6 @@
 package com.springboot.homework4.repository.impl;
 
+import com.springboot.homework4.dto.UserDto;
 import com.springboot.homework4.model.entity.Account;
 import com.springboot.homework4.model.entity.User;
 import com.springboot.homework4.repository.UserRepository;
@@ -77,7 +78,6 @@ public class UserRepositoryImpl implements UserRepository {
     public void deleteUser(String login) {
         list.removeIf(user -> user.getLogin().equals(login));
     }
-
 
 
 

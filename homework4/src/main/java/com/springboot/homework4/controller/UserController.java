@@ -23,7 +23,6 @@ public class UserController {
     private final UserService userService;
 
 
-
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getAllUsers() {
@@ -69,17 +68,16 @@ public class UserController {
         fields.forEach((k, v) -> {
             Field field = ReflectionUtils.findField(UserDto.class, (String) k);
             field.setAccessible(true);
-            if (k.equals("discount")) {
-                ReflectionUtils.setField(field, userDto, Integer.parseInt((String) v));
-                return;//only skips this iteration
-            }
-            if (k.equals("isBlocked")) {
-                ReflectionUtils.setField(field, userDto, Boolean.parseBoolean((String) v));
-                return;//only skips this iteration
-            }
-
             ReflectionUtils.setField(field, userDto, v);
         });
+        return userService.updateUser(login, userDto);
+    }
+
+
+    @PatchMapping(value = "/{login}/change-block-status")
+    public UserDto changeBlockStatus(@PathVariable String login) {
+        UserDto userDto = userService.getUserByLogin(login);
+        userDto.setBlocked(!userDto.isBlocked());
         return userService.updateUser(login, userDto);
     }
 
