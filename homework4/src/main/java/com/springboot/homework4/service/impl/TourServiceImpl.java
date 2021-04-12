@@ -7,6 +7,7 @@ import com.springboot.homework4.model.entity.Tour;
 import com.springboot.homework4.repository.TourRepository;
 import com.springboot.homework4.service.TourService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 
 
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class TourServiceImpl implements TourService {
     private final TourRepository tourRepository;
@@ -88,28 +90,26 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public TourRegisterDto createTour(TourRegisterDto tourRegisterDto){
+    public TourRegisterDto createTour(TourRegisterDto tourRegisterDto) {
         Tour tour = mapTourRegisterDtoToTour(tourRegisterDto);
         tour = tourRepository.createTour(tour);
+        log.info("New tour " + tour);
         return mapTourToTourRegisterDto(tour);
     }
 
     @Override
-    public void deleteTour(long id){
+    public void deleteTour(long id) {
         tourRepository.deleteTour(id);
+        log.info("deleted tour with id = " + id);
     }
 
     @Override
-    public TourDto updateTour(long id, TourDto tourDto){
+    public TourDto updateTour(long id, TourDto tourDto) {
         Tour tour = mapTourDtoToTour(tourDto);
-        tour = tourRepository.updateTour(id,tour);
+        tour = tourRepository.updateTour(id, tour);
+        log.info(String.format("tour with id = %d updated: %s", id, tour));
         return mapTourToTourDto(tour);
     }
 
-    @Override
-    public TourDto changeTourHotStatus(long id){
-        Tour tour = tourRepository.changeHotStatus(id);
-        return mapTourToTourDto(tour);
-    }
 
 }

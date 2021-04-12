@@ -15,7 +15,6 @@ public class UserRepositoryImpl implements UserRepository {
     private List<User> list = new ArrayList<>();
 
 
-
     @Override
     public User getUser(String login) {
         return list.stream()
@@ -31,21 +30,27 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User createUser(User user) {
-        if (list.contains(user)) {
+        boolean userExists=list.stream().anyMatch(u-> u.getLogin().equals(user.getLogin()));
+        if (userExists) {
+            log.error(String.format("Unsuccessful attempt to create user. User's already created: %s", user));
             throw new RuntimeException("User's already created.");
         }
         try {
             createAccount(user);
         } catch (RuntimeException ex) {
-            log.error(ex.getMessage());
+            ex.printStackTrace();
         }
         list.add(user);
         return user;
     }
 
     private Account createAccount(Account account) throws RuntimeException {
-        boolean accountExists = list.stream().anyMatch(u -> u.getLogin().equals(account.getLogin()));
+        boolean accountExists = list.stream().anyMatch(a -> a.getLogin().equals(account.getLogin()));
         if (accountExists) {
+            log.error(
+                    String.format("Unsuccessful attempt to create account. " +
+                                    "Account with login %s has already created",
+                            account.getLogin()));
             throw new RuntimeException("account with login " + account.getLogin() + " has already created");
         }
         return account;
@@ -53,13 +58,14 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public User updateWholeUser(String login, User user) {
+    public User updateUser(String login, User user) {
         boolean isDeleted = list.removeIf(u -> login.equals(user.getLogin()));
 
         if (isDeleted) {
             list.add(user);
 
         } else {
+            log.error(String.format("Cannot update user. User does not exists %s", user));
             throw new RuntimeException("User does not exist.");
         }
 
@@ -67,34 +73,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
 
-
     @Override
     public void deleteUser(String login) {
         list.removeIf(user -> user.getLogin().equals(login));
     }
 
-//    @Override
-//    public User updateUserDiscount(long id, int discount) {
-//        User user = list.stream()
-//                .filter(u -> u.getId() == id)
-//                .findFirst()
-//                .orElseThrow(() -> new RuntimeException("Not found user by id = " + id));
-//        user.setDiscount(discount);
-//        return user;
-//    }
 
-    @Override
-    public User changeUserBlockStatus(String login) {
-        User user = list.stream()
-                .filter(u -> u.getLogin().equals(login))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Not found user with login = " + login));
-        boolean isBlocked = user.isBlocked();
-
-        user.setBlocked(!isBlocked);
-
-        return user;
-    }
 
 
 }

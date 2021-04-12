@@ -17,8 +17,7 @@ public interface UserService {
     void deleteUser(String login);
 
 
-    UserDto updateWholeUser(String login, UserDto userDto);
+    UserDto updateUser(String login, UserDto userDto);
 
 
-    UserDto changeUserBlockStatus(String login);
 }

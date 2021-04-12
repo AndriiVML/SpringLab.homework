@@ -11,9 +11,8 @@ public interface UserRepository {
 
     User createUser(User user);
 
-    User updateWholeUser(String login, User user);
+    User updateUser(String login, User user);
 
     void deleteUser(String email);
 
-    User changeUserBlockStatus(String login);
 }

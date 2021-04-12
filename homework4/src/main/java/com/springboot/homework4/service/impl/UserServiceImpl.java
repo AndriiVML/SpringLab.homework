@@ -7,6 +7,7 @@ import com.springboot.homework4.model.entity.User;
 import com.springboot.homework4.repository.UserRepository;
 import com.springboot.homework4.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
@@ -67,7 +69,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public UserDto getUserByLogin(String login) {
         User user = userRepository.getUser(login);
@@ -89,6 +90,7 @@ public class UserServiceImpl implements UserService {
     public UserRegisterDto createUser(UserRegisterDto userRegisterDto) {
         User user = mapUserRegisterDtoToUser(userRegisterDto);
         user = userRepository.createUser(user);
+        log.info("New user " + user);
         return mapUserToUserRegisterDto(user);
 
     }
@@ -97,25 +99,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String login) {
         userRepository.deleteUser(login);
+        log.info("deleted user with login = " + login);
     }
 
 
     @Override
-    public UserDto updateWholeUser(String login, UserDto userDto) {
+    public UserDto updateUser(String login, UserDto userDto) {
         User user = mapUserDtoToUser(userDto);
-        user = userRepository.updateWholeUser(login, user);
+        user = userRepository.updateUser(login, user);
+        log.info("user with login = " + login + " updated: " + user);
         return mapUserToUserDto(user);
     }
 
-//    @Override
-//    public UserDto updateUserDiscount(long id, int discount) {
-//        User user = userRepository.updateUserDiscount(id, discount);
-//        return mapUserToUserDto(user);
-//    }
 
-    @Override
-    public UserDto changeUserBlockStatus(String login) {
-        User user = userRepository.changeUserBlockStatus(login);
-        return mapUserToUserDto(user);
-    }
 }

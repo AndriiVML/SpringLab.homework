@@ -16,5 +16,4 @@ public interface TourService {
 
     TourDto updateTour(long id, TourDto tourDto);
 
-    TourDto changeTourHotStatus(long id);
 }
