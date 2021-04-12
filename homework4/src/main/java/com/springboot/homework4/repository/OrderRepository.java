@@ -7,6 +7,8 @@ import com.springboot.homework4.model.entity.User;
 import java.util.List;
 
 public interface OrderRepository {
+    int getCount();
+
     TourPurchase getOrder(long id);
 
     List<TourPurchase> getAllOrders();

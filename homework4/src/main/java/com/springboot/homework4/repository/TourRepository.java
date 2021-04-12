@@ -5,6 +5,12 @@ import com.springboot.homework4.model.entity.Tour;
 import java.util.List;
 
 public interface TourRepository {
+    int getCountOfDisabledTours();
+
+    int getCountOfActiveTours();
+
+    int getCount();
+
     Tour getTour(long id);
 
     List<Tour> getAllTours();

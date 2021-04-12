@@ -17,6 +17,11 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
+    public int getCount() {
+        return list.size();
+    }
+
+    @Override
     public User getUser(String login) {
         return list.stream()
                 .filter(u -> u.getLogin().equals(login))
@@ -31,7 +36,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User createUser(User user) {
-        boolean userExists=list.stream().anyMatch(u-> u.getLogin().equals(user.getLogin()));
+        boolean userExists = list.stream().anyMatch(u -> u.getLogin().equals(user.getLogin()));
         if (userExists) {
             log.error(String.format("Unsuccessful attempt to create user. User's already created: %s", user));
             throw new RuntimeException("User's already created.");
@@ -78,7 +83,6 @@ public class UserRepositoryImpl implements UserRepository {
     public void deleteUser(String login) {
         list.removeIf(user -> user.getLogin().equals(login));
     }
-
 
 
 }

@@ -16,6 +16,21 @@ public class TourRepositoryImpl implements TourRepository {
 
 
     @Override
+    public int getCountOfDisabledTours() {
+        return list.size() - getCountOfActiveTours();
+    }
+
+    @Override
+    public int getCountOfActiveTours() {
+        return getAllTours().size();
+    }
+
+    @Override
+    public int getCount() {
+        return list.size();
+    }
+
+    @Override
     public Tour getTour(long id) {
         return list.stream()
                 .filter(t -> t.getId() == id)

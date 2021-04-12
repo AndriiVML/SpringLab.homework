@@ -4,6 +4,7 @@ import com.springboot.homework4.model.Status;
 import com.springboot.homework4.model.entity.TourPurchase;
 import com.springboot.homework4.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/tours/orders")
+@Log4j2
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
@@ -34,7 +36,7 @@ public class OrderController {
     /*
     {
         "tourId":"id",
-        "userLogin":"login",
+        "userLogin":"newLogin",
         "quantity":"10"
     }
     */
@@ -45,6 +47,7 @@ public class OrderController {
         long tourId = Long.parseLong(json.get("tourId"));
         String userLogin = json.get("userLogin");
         int quantity = Integer.parseInt(json.get("quantity"));
+
         return orderService.orderTour(tourId, userLogin, quantity);
     }
 

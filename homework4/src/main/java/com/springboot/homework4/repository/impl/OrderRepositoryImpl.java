@@ -16,6 +16,12 @@ import java.util.stream.Collectors;
 public class OrderRepositoryImpl implements OrderRepository {
     List<TourPurchase> list = new ArrayList<>();
 
+
+    @Override
+    public int getCount() {
+        return list.size();
+    }
+
     @Override
     public TourPurchase getOrder(long id) {
         return list.stream()
@@ -66,9 +72,9 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public void deleteOrder(long id) {
-        boolean isDeleted = list.removeIf(tp-> tp.getId()== id);
-        if(!isDeleted){
-            throw  new RuntimeException("Cannot delete a non-existent order "+ id);
+        boolean isDeleted = list.removeIf(tp -> tp.getId() == id);
+        if (!isDeleted) {
+            throw new RuntimeException("Cannot delete a non-existent order " + id);
         }
     }
 }

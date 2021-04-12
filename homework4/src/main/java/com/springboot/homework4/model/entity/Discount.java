@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class Discount extends Entity{
-    private int step;
-    private int max;
+    private int step=5;
+    private int max=20;
 }

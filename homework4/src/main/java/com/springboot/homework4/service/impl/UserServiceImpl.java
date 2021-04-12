@@ -1,5 +1,7 @@
 package com.springboot.homework4.service.impl;
 
+import com.springboot.homework4.model.entity.Discount;
+import com.springboot.homework4.repository.DiscountRepository;
 import com.springboot.homework4.util.Util;
 import com.springboot.homework4.dto.UserDto;
 import com.springboot.homework4.dto.UserRegisterDto;
@@ -18,6 +20,7 @@ import java.util.List;
 @Log4j2
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final DiscountRepository discountRepository;
 
 
     private UserDto mapUserToUserDto(User user) {
@@ -69,6 +72,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    public Discount setDiscount(int step, int max) {
+        return discountRepository.updateDiscount(step, max);
+    }
+
+    @Override
+    public Discount getDiscount(){
+        return discountRepository.getDiscount();
+    }
+
+    @Override
     public UserDto getUserByLogin(String login) {
         User user = userRepository.getUser(login);
         return mapUserToUserDto(user);
@@ -109,7 +122,6 @@ public class UserServiceImpl implements UserService {
         log.info("user with login = " + login + " updated: " + user);
         return mapUserToUserDto(user);
     }
-
 
 
 }

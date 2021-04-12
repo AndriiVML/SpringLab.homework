@@ -2,6 +2,7 @@ package com.springboot.homework4.controller;
 
 import com.springboot.homework4.dto.UserDto;
 import com.springboot.homework4.dto.UserRegisterDto;
+import com.springboot.homework4.model.entity.Discount;
 import com.springboot.homework4.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -88,5 +89,22 @@ public class UserController {
         return ResponseEntity.noContent().build();//204 deleted successfully
     }
 
+    @GetMapping("/discount")
+    public Discount getDiscount() {
+        return userService.getDiscount();
+    }
+
+    @PatchMapping("/discount")
+    public Discount updateDiscount(@RequestBody Map<String, Integer> json) {
+        Integer step = json.get("step");
+        Integer max = json.get("max");
+        if (step == null) {
+            step = userService.getDiscount().getStep();
+        }
+        if (max == null) {
+            max = userService.getDiscount().getMax();
+        }
+        return userService.setDiscount(step, max);
+    }
 
 }
