@@ -3,6 +3,7 @@ package com.springboot.homework4.repository.impl;
 import com.springboot.homework4.model.entity.Tour;
 import com.springboot.homework4.repository.TourRepository;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-@Log4j2
+@Slf4j
 public class TourRepositoryImpl implements TourRepository {
     private List<Tour> list = new ArrayList<>();
 
@@ -32,11 +33,13 @@ public class TourRepositoryImpl implements TourRepository {
 
     @Override
     public Tour getTour(long id) {
-        return list.stream()
+        Tour tour = list.stream()
                 .filter(t -> t.getId() == id)
                 .filter(t -> !t.isDeleted())
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Not found tour with id = " + id));
+                .orElseThrow(() -> new RuntimeException("Tour is not found"));
+        log.info("tour: " + tour);
+        return tour;
     }
 
     @Override
@@ -44,6 +47,7 @@ public class TourRepositoryImpl implements TourRepository {
         List<Tour> result = list.stream()
                 .filter(tour -> !tour.isDeleted())
                 .collect(Collectors.toList());
+        log.info("all tours: " + result);
         return result;
     }
 
@@ -51,6 +55,7 @@ public class TourRepositoryImpl implements TourRepository {
     public Tour createTour(Tour tour) {
         //need to add some check
         list.add(tour);
+        log.info("New tour:" + tour);
         return tour;
     }
 
@@ -62,9 +67,10 @@ public class TourRepositoryImpl implements TourRepository {
             list.add(tour);
 
         } else {
-            log.error("Cannot update tour. Tour does not exists " + tour);
+            log.error("Cannot update tour. Tour does not exists: " + tour);
             throw new RuntimeException("Tour does not exist.");
         }
+        log.info("Tour is updated: " + tour);
         return tour;
     }
 
@@ -75,12 +81,12 @@ public class TourRepositoryImpl implements TourRepository {
     @Override
     public void deleteTour(long id) {
         Tour tour = list.stream()
-                .filter(t -> t.getId() == id)
+                .filter(t -> t.getId() == id && !t.isDeleted())
                 .findFirst().orElseThrow(() -> new RuntimeException("Cannot delete a non-existent tour "));
         list.remove(tour);
         tour.setDeleted(true);
         list.add(tour);
-
+        log.info("Tour is deleted");
     }
 
 

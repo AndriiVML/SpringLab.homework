@@ -1,18 +1,18 @@
 package com.springboot.homework4.repository.impl;
 
-import com.springboot.homework4.dto.UserDto;
 import com.springboot.homework4.model.entity.Account;
 import com.springboot.homework4.model.entity.User;
 import com.springboot.homework4.repository.UserRepository;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@Log4j2
+@Slf4j
 public class UserRepositoryImpl implements UserRepository {
+    private List<Account> accounts = new ArrayList<>();
     private List<User> list = new ArrayList<>();
 
 
@@ -23,14 +23,18 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getUser(String login) {
-        return list.stream()
+
+        User user = list.stream()
                 .filter(u -> u.getLogin().equals(login))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Not found account with login = " + login));
+                .orElseThrow(() -> new RuntimeException("User is not found"));
+        log.info("user: " + user);
+        return user;
     }
 
     @Override
     public List<User> getAllUsers() {
+        log.info("all users: " + list);
         return list;
     }
 
@@ -38,28 +42,40 @@ public class UserRepositoryImpl implements UserRepository {
     public User createUser(User user) {
         boolean userExists = list.stream().anyMatch(u -> u.getLogin().equals(user.getLogin()));
         if (userExists) {
-            log.error(String.format("Unsuccessful attempt to create user. User's already created: %s", user));
-            throw new RuntimeException("User's already created.");
+            String message = "User is already created";
+            log.error(message);
+            throw new RuntimeException(message);
         }
         try {
             createAccount(user);
         } catch (RuntimeException ex) {
-            ex.printStackTrace();
+            log.error(ex.getMessage(), ex);
         }
         list.add(user);
+        log.info("New user:" + user);
         return user;
     }
 
-    private Account createAccount(Account account) throws RuntimeException {
+    private Account createAccount(Account account) {
         boolean accountExists = list.stream().anyMatch(a -> a.getLogin().equals(account.getLogin()));
         if (accountExists) {
-            log.error(
-                    String.format("Unsuccessful attempt to create account. " +
-                                    "Account with login %s has already created",
-                            account.getLogin()));
-            throw new RuntimeException("account with login " + account.getLogin() + " has already created");
+            String message = "Account is already created";
+            log.error(message);
+            throw new RuntimeException(message);
         }
+        accounts.add(account);
+        log.info("New account:" + account);
         return account;
+    }
+
+    private void deleteAccount(String login) {
+        boolean isDeleted = accounts.removeIf(acc -> acc.getLogin().equals(login));
+        if (!isDeleted) {
+            String message = "Cannot delete a non-existent account";
+            log.error(message);
+            throw new RuntimeException(message);
+        }
+        log.info("Account is deleted");
     }
 
 
@@ -71,9 +87,13 @@ public class UserRepositoryImpl implements UserRepository {
             list.add(user);
 
         } else {
-            log.error(String.format("Cannot update user. User does not exists %s", user));
-            throw new RuntimeException("User does not exist.");
+            String message = "Cannot update user. Wrong login=" + user.getLogin();
+            log.error(message);
+            throw new RuntimeException(message);
         }
+
+        log.info("User is updated");
+
 
         return user;
     }
@@ -81,7 +101,15 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void deleteUser(String login) {
-        list.removeIf(user -> user.getLogin().equals(login));
+        boolean isDeleted = list.removeIf(user -> user.getLogin().equals(login));
+        if (!isDeleted) {
+            String message = "Cannot delete a non-existent user";
+            log.error(message);
+            throw new RuntimeException(message);
+        }
+        log.info("User is deleted");
+        log.info("Attempt to delete account with login: " + login);
+        deleteAccount(login);
     }
 
 

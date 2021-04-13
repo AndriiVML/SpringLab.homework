@@ -8,6 +8,7 @@ import com.springboot.homework4.repository.TourRepository;
 import com.springboot.homework4.service.TourService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
 
 
 @Service
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor
 public class TourServiceImpl implements TourService {
     private final TourRepository tourRepository;
@@ -75,12 +76,14 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public TourDto getTour(long id) {
+        log.info("Attempt to get tour with id=" + id);
         Tour tour = tourRepository.getTour(id);
         return mapTourToTourDto(tour);
     }
 
     @Override
     public List<TourDto> getAllTours() {
+        log.info("Attempt to get all tours");
         List<Tour> tours = tourRepository.getAllTours();
         List<TourDto> tourDtos = new ArrayList<>();
         for (Tour t : tours) {
@@ -91,23 +94,24 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public TourRegisterDto createTour(TourRegisterDto tourRegisterDto) {
+        log.info("Attempt to create tour: " + tourRegisterDto);
         Tour tour = mapTourRegisterDtoToTour(tourRegisterDto);
         tour = tourRepository.createTour(tour);
-        log.info("New tour " + tour);
         return mapTourToTourRegisterDto(tour);
     }
 
     @Override
     public void deleteTour(long id) {
+        log.info("Attempt to delete tour with id=" + id);
         tourRepository.deleteTour(id);
-        log.info("deleted tour with id = " + id);
+
     }
 
     @Override
     public TourDto updateTour(long id, TourDto tourDto) {
+        log.info(String.format("Attempt to update tour with id=%d possibleUpdate: %s", id, tourDto));
         Tour tour = mapTourDtoToTour(tourDto);
         tour = tourRepository.updateTour(id, tour);
-        log.info(String.format("tour with id = %d updated: %s", id, tour));
         return mapTourToTourDto(tour);
     }
 
