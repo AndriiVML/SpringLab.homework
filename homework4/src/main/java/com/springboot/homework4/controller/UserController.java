@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -43,36 +44,37 @@ public class UserController {
 
     //test in postman
     /*
-    {
-        "login":"newLogin",
-        "firstName":"firstName1",
-        "lastName":"lastName1",
-        "email":"email@email.com",
-        "password":"pass1",
-        "repeatPassword":"pass1"
-    }
+        {
+            "login":"newLogin",
+            "firstName":"firstName1",
+            "lastName":"lastName1",
+            "email":"email@email.com",
+            "password":"pass1",
+            "repeatPassword":"pass1"
+        }
     */
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public UserRegisterDto createUser(@RequestBody UserRegisterDto userRegisterDto) {
+    public UserRegisterDto createUser(@Valid @RequestBody UserRegisterDto userRegisterDto) {
         log.info("Attempt to create user: " + userRegisterDto);
         return userService.createUser(userRegisterDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/{login}")
-    public UserDto updateUser(@PathVariable String login, @RequestBody UserDto userDto) {
+    public UserDto updateUser(@PathVariable String login, @Valid @RequestBody UserDto userDto) {
         log.info(String.format("Attempt to update user with login=%s possibleUpdate: %s", login, userDto));
         userDto.setId(userService.getUserByLogin(login).getId());
         return userService.updateUser(login, userDto);
     }
 
 
+    //maybe validated here
     @PatchMapping(value = "/{login}")
     public UserDto applyPatchToUser(@PathVariable String login, @RequestBody Map<Object, Object> fields) {
         log.info(String.format("Attempt to update user with login=%s updateFields: %s", login, fields));
-        final UserDto userDto = userService.getUserByLogin(login);
+       @Valid final UserDto userDto = userService.getUserByLogin(login);
         fields.forEach((k, v) -> {
             if (!(k.equals("firstName") || k.equals("lastName") || k.equals("password"))) {
                 String message = "this field is not allowed: " + k;
@@ -119,6 +121,10 @@ public class UserController {
         }
         if (max == null) {
             max = userService.getDiscount().getMax();
+        }
+        if(step==userService.getDiscount().getStep()&&max==userService.getDiscount().getMax()){
+            log.info("Nothing has changed in discount");
+            return userService.getDiscount();
         }
         return userService.setDiscount(step, max);
     }

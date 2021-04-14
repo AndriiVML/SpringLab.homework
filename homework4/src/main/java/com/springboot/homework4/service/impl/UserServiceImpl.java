@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
                 .login(user.getLogin())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .discount(user.getDiscount())
                 .email(user.getEmail())
                 .isBlocked(user.isBlocked())
                 .build();
@@ -40,7 +41,6 @@ public class UserServiceImpl implements UserService {
                 .firstName(userDto.getFirstName())
                 .lastName(userDto.getLastName())
                 .email(userDto.getEmail())
-                .discount(userDto.getDiscount())
                 .isBlocked(userDto.isBlocked())
                 .build();
         user.setId(userDto.getId());
@@ -122,6 +122,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(String login, UserDto userDto) {
+        if (!login.equals(userDto.getLogin())) {
+            String message = "Cannot update login in user";
+            log.error(message);
+            throw new RuntimeException(message);
+        }
         log.info(String.format("Attempt to update user with login=%s possibleUpdate: %s", login, userDto));
         User user = mapUserDtoToUser(userDto);
         user = userRepository.updateUser(login, user);

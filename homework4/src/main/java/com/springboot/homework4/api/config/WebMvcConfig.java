@@ -1,4 +1,4 @@
-package com.springboot.homework4.config;
+package com.springboot.homework4.api.config;
 
 import com.springboot.homework4.interceptor.LoggerInterceptor;
 import lombok.RequiredArgsConstructor;

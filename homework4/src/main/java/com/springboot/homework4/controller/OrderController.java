@@ -1,16 +1,18 @@
 package com.springboot.homework4.controller;
 
+import com.springboot.homework4.dto.OrderDto;
+import com.springboot.homework4.dto.TourPurchaseDto;
 import com.springboot.homework4.model.Status;
-import com.springboot.homework4.model.entity.TourPurchase;
 import com.springboot.homework4.service.OrderService;
+import com.springboot.homework4.validation.order.OrderBasicInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/tours/orders")
@@ -21,7 +23,7 @@ public class OrderController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<TourPurchase> getAllOrders() {
+    public List<OrderDto> getAllOrders() {
         log.info("Attempt to get all orders");
         return orderService.getAllOrders();
     }
@@ -29,7 +31,7 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}")
-    public TourPurchase getOrder(@PathVariable long id) {
+    public OrderDto getOrder(@PathVariable long id) {
         log.info("Attempt to get order with id=" + id);
         return orderService.getOrder(id);
     }
@@ -37,31 +39,29 @@ public class OrderController {
     //test in postman
     /*
     {
-        "tourId":"id",
+        "tourId":id,
         "userLogin":"newLogin",
-        "quantity":"10"
+        "numberOfTours":1
     }
     */
 
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public TourPurchase orderTour(@RequestBody Map<String, String> json) {
-        long tourId = Long.parseLong(json.get("tourId"));
-        String userLogin = json.get("userLogin");
-        int quantity = Integer.parseInt(json.get("quantity"));
+    public OrderDto orderTour(@Validated(OrderBasicInfo.class) @RequestBody OrderDto orderDto) {
         log.info(
                 String.format("Attempt to make order: userLogin=%s, tourId=%d, quantity=%d",
-                        userLogin, tourId, quantity));
-        return orderService.orderTour(tourId, userLogin, quantity);
+                        orderDto.getUserLogin(), orderDto.getTourId(), orderDto.getNumberOfTours()));
+        return orderService.orderTour(orderDto);
     }
 
-    @PatchMapping(value = "/{id}/status")
-    public TourPurchase changeStatus(@PathVariable long id, @RequestParam String status) {
+    @PatchMapping(value = "/{id}/change-status")
+    public OrderDto changeStatus(@PathVariable long id, @RequestParam String status) {
         Status st = Status.valueOf(status);
-        TourPurchase tourPurchase = orderService.getOrder(id);
+        OrderDto orderDto = orderService.getOrder(id);
         log.info("Attempt to change status of order");
-        tourPurchase = orderService.changeStatus(st, tourPurchase);
-        return tourPurchase;
+        orderDto = orderService.changeStatus(st, orderDto);
+        return orderDto;
     }
 
 

@@ -20,7 +20,7 @@ public class Util {
     * */
     public static BigDecimal getActualPrice(BigDecimal price, int discount, int quantity) {
         double disc = discount / 100.;
-        double x = disc + 1;
+        double x = 1 - disc;
         BigDecimal result = price.multiply(BigDecimal.valueOf(x * quantity));
         return result;
     }

@@ -1,18 +1,19 @@
 package com.springboot.homework4.service;
 
+import com.springboot.homework4.dto.OrderDto;
 import com.springboot.homework4.model.Status;
 import com.springboot.homework4.model.entity.TourPurchase;
 
 import java.util.List;
 
 public interface OrderService {
-    TourPurchase getOrder(long id);
+    OrderDto getOrder(long id);
 
-    List<TourPurchase> getAllOrders();
+    List<OrderDto> getAllOrders();
 
-    TourPurchase orderTour(long tourId, String userLogin, int quantity);
+    OrderDto orderTour(OrderDto orderDto);
 
     void deleteOrder(long id);
 
-    TourPurchase changeStatus(Status status, TourPurchase tourPurchase);
+    OrderDto changeStatus(Status status, OrderDto orderDto);
 }

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.*;
@@ -51,14 +52,14 @@ public class TourController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public TourRegisterDto createTour(@RequestBody TourRegisterDto tourRegisterDto) {
+    public TourRegisterDto createTour(@Valid @RequestBody TourRegisterDto tourRegisterDto) {
         log.info("Attempt to create tour: " + tourRegisterDto);
         return tourService.createTour(tourRegisterDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/{id}")
-    public TourDto updateTour(@PathVariable long id, @RequestBody TourDto tourDto) {
+    public TourDto updateTour(@PathVariable long id, @Valid @RequestBody TourDto tourDto) {
         log.info(String.format("Attempt to update tour with id=%d possibleUpdate: %s", id, tourDto));
         return tourService.updateTour(id, tourDto);
     }
@@ -88,6 +89,7 @@ public class TourController {
         }
     * */
 
+    //maybe add @Validated
     @PatchMapping(value = "/{id}")
     public TourDto applyPatchToTour(@PathVariable long id, @RequestBody Map<Object, Object> fields) {
         log.info(String.format("Attempt to update tour with id=%d updateFields: %s", id, fields));
