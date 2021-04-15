@@ -1,0 +1,14 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+info:
+  app:
+    name: Travel Agency
+    description: This is Spring Boot Application
+    version: 1.0.0
+  java-vendor: ${java.specification.vendor}
