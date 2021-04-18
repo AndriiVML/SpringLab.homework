@@ -1,6 +1,6 @@
 package com.mlav.springboot.travelagency.model.entity;
 
-import com.springboot.homework4.model.Status;
+import com.mlav.springboot.travelagency.model.Status;
 import lombok.Builder;
 import lombok.Data;
 

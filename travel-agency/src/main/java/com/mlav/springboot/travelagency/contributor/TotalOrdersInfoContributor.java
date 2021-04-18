@@ -1,6 +1,6 @@
 package com.mlav.springboot.travelagency.contributor;
 
-import com.springboot.homework4.repository.OrderRepository;
+import com.mlav.springboot.travelagency.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.actuate.info.Info;
 import org.springframework.boot.actuate.info.InfoContributor;

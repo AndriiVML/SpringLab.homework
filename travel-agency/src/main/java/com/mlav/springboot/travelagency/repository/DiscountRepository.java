@@ -1,9 +1,9 @@
 package com.mlav.springboot.travelagency.repository;
 
-import com.springboot.homework4.model.entity.Discount;
+import com.mlav.springboot.travelagency.model.entity.Discount;
 
 public interface DiscountRepository {
     Discount getDiscount();
 
-    Discount updateDiscount(int step, int max);
+    Discount updateDiscount(Discount discount1);
 }

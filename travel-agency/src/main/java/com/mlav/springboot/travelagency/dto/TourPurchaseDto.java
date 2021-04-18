@@ -1,8 +1,8 @@
 package com.mlav.springboot.travelagency.dto;
 
-import com.springboot.homework4.model.Status;
-import com.springboot.homework4.model.entity.Tour;
-import com.springboot.homework4.model.entity.User;
+import com.mlav.springboot.travelagency.model.Status;
+import com.mlav.springboot.travelagency.model.entity.Tour;
+import com.mlav.springboot.travelagency.model.entity.User;
 import lombok.Builder;
 import lombok.Data;
 

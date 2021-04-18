@@ -1,7 +1,7 @@
 package com.mlav.springboot.travelagency.model.entity;
 
 
-import com.springboot.homework4.model.Role;
+import com.mlav.springboot.travelagency.model.Role;
 import lombok.Data;
 
 @Data

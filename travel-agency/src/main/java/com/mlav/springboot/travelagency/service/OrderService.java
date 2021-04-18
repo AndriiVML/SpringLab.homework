@@ -1,8 +1,8 @@
 package com.mlav.springboot.travelagency.service;
 
-import com.springboot.homework4.dto.OrderDto;
-import com.springboot.homework4.model.Status;
-import com.springboot.homework4.model.entity.TourPurchase;
+import com.mlav.springboot.travelagency.dto.OrderDto;
+import com.mlav.springboot.travelagency.model.Status;
+import com.mlav.springboot.travelagency.model.entity.TourPurchase;
 
 import java.util.List;
 

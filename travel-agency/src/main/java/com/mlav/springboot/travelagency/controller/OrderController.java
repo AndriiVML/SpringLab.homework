@@ -1,10 +1,9 @@
 package com.mlav.springboot.travelagency.controller;
 
-import com.springboot.homework4.dto.OrderDto;
-import com.springboot.homework4.dto.TourPurchaseDto;
-import com.springboot.homework4.model.Status;
-import com.springboot.homework4.service.OrderService;
-import com.springboot.homework4.validation.order.OrderBasicInfo;
+import com.mlav.springboot.travelagency.dto.OrderDto;
+import com.mlav.springboot.travelagency.model.Status;
+import com.mlav.springboot.travelagency.service.OrderService;
+import com.mlav.springboot.travelagency.validation.order.OrderBasicInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

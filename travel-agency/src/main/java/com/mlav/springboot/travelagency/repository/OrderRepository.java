@@ -1,8 +1,8 @@
 package com.mlav.springboot.travelagency.repository;
 
-import com.springboot.homework4.model.Status;
-import com.springboot.homework4.model.entity.TourPurchase;
-import com.springboot.homework4.model.entity.User;
+import com.mlav.springboot.travelagency.model.Status;
+import com.mlav.springboot.travelagency.model.entity.TourPurchase;
+import com.mlav.springboot.travelagency.model.entity.User;
 
 import java.util.List;
 

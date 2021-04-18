@@ -1,7 +1,6 @@
 package com.mlav.springboot.travelagency.service;
 
-import com.springboot.homework4.dto.TourDto;
-import com.springboot.homework4.dto.TourRegisterDto;
+import com.mlav.springboot.travelagency.dto.TourDto;
 
 import java.util.List;
 
@@ -10,7 +9,7 @@ public interface TourService {
 
     List<TourDto> getAllTours();
 
-    TourRegisterDto createTour(TourRegisterDto tourRegisterDto);
+    TourDto createTour(TourDto tourDto);
 
     void deleteTour(long id);
 

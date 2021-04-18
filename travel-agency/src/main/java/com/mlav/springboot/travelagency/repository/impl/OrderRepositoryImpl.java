@@ -1,9 +1,11 @@
 package com.mlav.springboot.travelagency.repository.impl;
 
-import com.springboot.homework4.model.Status;
-import com.springboot.homework4.model.entity.TourPurchase;
-import com.springboot.homework4.model.entity.User;
-import com.springboot.homework4.repository.OrderRepository;
+import com.mlav.springboot.travelagency.exception.NotValidStatusException;
+import com.mlav.springboot.travelagency.exception.OrderNotFoundException;
+import com.mlav.springboot.travelagency.model.Status;
+import com.mlav.springboot.travelagency.model.entity.TourPurchase;
+import com.mlav.springboot.travelagency.model.entity.User;
+import com.mlav.springboot.travelagency.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +29,7 @@ public class OrderRepositoryImpl implements OrderRepository {
         TourPurchase tourPurchase = list.stream()
                 .filter(tp -> tp.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Order is not found"));
+                .orElseThrow(OrderNotFoundException::new);
         log.info("order: " + tourPurchase);
         return tourPurchase;
     }
@@ -58,23 +60,18 @@ public class OrderRepositoryImpl implements OrderRepository {
     public TourPurchase changeStatus(Status status, TourPurchase tourPurchase) {
         Status previousStatus = tourPurchase.getStatus();
         if (status == Status.REGISTERED) {
-            log.error("Cannot change status {} to status {}", status, Status.REGISTERED);
-            throw new RuntimeException(
-                    String.format("Cannot change status %s to status %s", status, Status.REGISTERED));
+            throw new NotValidStatusException(
+                    String.format("Cannot change status %s to status %s", tourPurchase.getStatus(), Status.REGISTERED));
         }
         if (tourPurchase.getStatus() != Status.REGISTERED) {
-            String message2 = "Status is already changed";
-            log.error(message2);
-            throw new RuntimeException(message2);
+            throw new NotValidStatusException("Status is already changed");
         }
         boolean isDeleted = list.removeIf(tp -> tp.getId() == tourPurchase.getId());
         tourPurchase.setStatus(status);
         if (isDeleted) {
             list.add(tourPurchase);
         } else {
-            String message3 = "Cannot change status of order. Order does not exist ";
-            log.error(message3);
-            throw new RuntimeException(message3);
+            throw new NotValidStatusException("Cannot change status of order. Order does not exist ");
         }
         log.info(String.format("Status is changed from %s to %s in order: %s", previousStatus, status, tourPurchase));
         return tourPurchase;
@@ -84,7 +81,7 @@ public class OrderRepositoryImpl implements OrderRepository {
     public void deleteOrder(long id) {
         boolean isDeleted = list.removeIf(tp -> tp.getId() == id);
         if (!isDeleted) {
-            throw new RuntimeException("Cannot delete a non-existent order");
+            throw new OrderNotFoundException("Cannot delete a non-existent order");
         }
         log.info("Order is deleted");
     }

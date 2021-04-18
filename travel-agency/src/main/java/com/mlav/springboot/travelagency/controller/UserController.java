@@ -1,14 +1,17 @@
 package com.mlav.springboot.travelagency.controller;
 
-import com.springboot.homework4.dto.UserDto;
-import com.springboot.homework4.dto.UserRegisterDto;
-import com.springboot.homework4.model.entity.Discount;
-import com.springboot.homework4.service.UserService;
+import com.mlav.springboot.travelagency.dto.UserDto;
+import com.mlav.springboot.travelagency.dto.UserRegisterDto;
+import com.mlav.springboot.travelagency.model.entity.Discount;
+import com.mlav.springboot.travelagency.service.UserService;
+import com.mlav.springboot.travelagency.validation.user.UserPatchUpdate;
+import com.mlav.springboot.travelagency.validation.user.UserPutUpdate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -61,30 +64,46 @@ public class UserController {
         return userService.createUser(userRegisterDto);
     }
 
+    /*
+    * Works fine when login and email is new and unique
+    * */
+
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/{login}")
-    public UserDto updateUser(@PathVariable String login, @Valid @RequestBody UserDto userDto) {
+    public UserDto updateUser(@PathVariable String login,
+                              @Validated(UserPutUpdate.class) @RequestBody UserDto userDto) {
         log.info(String.format("Attempt to update user with login=%s possibleUpdate: %s", login, userDto));
-        userDto.setId(userService.getUserByLogin(login).getId());
+        UserDto userFromDb = userService.getUserByLogin(login);
+        userDto.setId(userFromDb.getId());
+        userDto.setDiscount(userFromDb.getDiscount());
+        userDto.setIsBlocked(userFromDb.getIsBlocked());
         return userService.updateUser(login, userDto);
     }
 
 
-    //maybe validated here
     @PatchMapping(value = "/{login}")
-    public UserDto applyPatchToUser(@PathVariable String login, @RequestBody Map<Object, Object> fields) {
-        log.info(String.format("Attempt to update user with login=%s updateFields: %s", login, fields));
-       @Valid final UserDto userDto = userService.getUserByLogin(login);
-        fields.forEach((k, v) -> {
-            if (!(k.equals("firstName") || k.equals("lastName") || k.equals("password"))) {
-                String message = "this field is not allowed: " + k;
-                log.error(message);
-                throw new RuntimeException(message);
-            }
-            Field field = ReflectionUtils.findField(UserDto.class, (String) k);
-            field.setAccessible(true);
-            ReflectionUtils.setField(field, userDto, v);
-        });
+    public UserDto applyPatchToUser(@PathVariable String login,
+                                    @Validated(UserPatchUpdate.class) @RequestBody UserDto userDto) {
+        log.info(String.format("Attempt to update user with login=%s on user: %s", login, userDto));
+        UserDto userFromDb = userService.getUserByLogin(login);
+        if (userDto.getLogin() == null) {
+            userDto.setLogin(userFromDb.getLogin());
+        }
+        if (userDto.getEmail() == null) {
+            userDto.setEmail(userFromDb.getEmail());
+        }
+        if (userDto.getPassword() == null) {
+            userDto.setPassword(userFromDb.getPassword());
+        }
+        if (userDto.getFirstName() == null) {
+            userDto.setFirstName(userFromDb.getFirstName());
+        }
+        if (userDto.getLastName() == null) {
+            userDto.setLastName(userFromDb.getLastName());
+        }
+        userDto.setId(userFromDb.getId());
+        userDto.setDiscount(userFromDb.getDiscount());
+        userDto.setIsBlocked(userFromDb.getIsBlocked());
         return userService.updateUser(login, userDto);
     }
 
@@ -93,7 +112,7 @@ public class UserController {
     public UserDto changeBlockStatus(@PathVariable String login) {
         log.info("Attempt to change block-status of user with login=" + login);
         UserDto userDto = userService.getUserByLogin(login);
-        userDto.setBlocked(!userDto.isBlocked());
+        userDto.setIsBlocked(!userDto.getIsBlocked());
         return userService.updateUser(login, userDto);
     }
 
@@ -105,28 +124,5 @@ public class UserController {
         return ResponseEntity.noContent().build();//204 deleted successfully
     }
 
-    @GetMapping("/discount")
-    public Discount getDiscount() {
-        log.info("Attempt to get general discount");
-        return userService.getDiscount();
-    }
-
-    @PatchMapping("/discount")
-    public Discount updateDiscount(@RequestBody Map<String, Integer> json) {
-        log.info("Attempt to change discount fields on " + json);
-        Integer step = json.get("step");
-        Integer max = json.get("max");
-        if (step == null) {
-            step = userService.getDiscount().getStep();
-        }
-        if (max == null) {
-            max = userService.getDiscount().getMax();
-        }
-        if(step==userService.getDiscount().getStep()&&max==userService.getDiscount().getMax()){
-            log.info("Nothing has changed in discount");
-            return userService.getDiscount();
-        }
-        return userService.setDiscount(step, max);
-    }
 
 }

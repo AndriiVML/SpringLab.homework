@@ -1,8 +1,10 @@
 package com.mlav.springboot.travelagency.repository.impl;
 
-import com.springboot.homework4.model.entity.Account;
-import com.springboot.homework4.model.entity.User;
-import com.springboot.homework4.repository.UserRepository;
+import com.mlav.springboot.travelagency.exception.AccountNotFoundException;
+import com.mlav.springboot.travelagency.exception.UserNotFoundException;
+import com.mlav.springboot.travelagency.model.entity.Account;
+import com.mlav.springboot.travelagency.model.entity.User;
+import com.mlav.springboot.travelagency.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +29,17 @@ public class UserRepositoryImpl implements UserRepository {
         User user = list.stream()
                 .filter(u -> u.getLogin().equals(login))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("User is not found"));
+                .orElseThrow(UserNotFoundException::new);
+        log.info("user: " + user);
+        return user;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        User user = list.stream()
+                .filter(u -> u.getEmail().equals(email))
+                .findFirst()
+                .orElseThrow(UserNotFoundException::new);
         log.info("user: " + user);
         return user;
     }
@@ -40,17 +52,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User createUser(User user) {
-        boolean userExists = list.stream().anyMatch(u -> u.getLogin().equals(user.getLogin()));
-        if (userExists) {
-            String message = "User is already created";
-            log.error(message);
-            throw new RuntimeException(message);
-        }
-        try {
-            createAccount(user);
-        } catch (RuntimeException ex) {
-            log.error(ex.getMessage(), ex);
-        }
+        createAccount(user);
         list.add(user);
         log.info("New user:" + user);
         return user;
@@ -59,9 +61,7 @@ public class UserRepositoryImpl implements UserRepository {
     private Account createAccount(Account account) {
         boolean accountExists = list.stream().anyMatch(a -> a.getLogin().equals(account.getLogin()));
         if (accountExists) {
-            String message = "Account is already created";
-            log.error(message);
-            throw new RuntimeException(message);
+            throw new AccountNotFoundException();
         }
         accounts.add(account);
         log.info("New account:" + account);
@@ -72,8 +72,7 @@ public class UserRepositoryImpl implements UserRepository {
         boolean isDeleted = accounts.removeIf(acc -> acc.getLogin().equals(login));
         if (!isDeleted) {
             String message = "Cannot delete a non-existent account";
-            log.error(message);
-            throw new RuntimeException(message);
+            throw new AccountNotFoundException(message);
         }
         log.info("Account is deleted");
     }
@@ -81,19 +80,15 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User updateUser(String login, User user) {
-        boolean isDeleted = list.removeIf(u -> login.equals(user.getLogin()));
+        boolean isDeleted = list.removeIf(u -> login.equals(u.getLogin()));
 
         if (isDeleted) {
             list.add(user);
-
         } else {
-            String message = "Cannot update user. Wrong login=" + user.getLogin();
-            log.error(message);
-            throw new RuntimeException(message);
+            throw new UserNotFoundException("Cannot update user. User is not found!");
         }
 
         log.info("User is updated");
-
 
         return user;
     }
@@ -104,8 +99,7 @@ public class UserRepositoryImpl implements UserRepository {
         boolean isDeleted = list.removeIf(user -> user.getLogin().equals(login));
         if (!isDeleted) {
             String message = "Cannot delete a non-existent user";
-            log.error(message);
-            throw new RuntimeException(message);
+            throw new UserNotFoundException(message);
         }
         log.info("User is deleted");
         log.info("Attempt to delete account with login: " + login);

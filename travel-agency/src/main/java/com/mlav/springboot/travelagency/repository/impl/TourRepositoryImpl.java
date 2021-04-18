@@ -1,7 +1,8 @@
 package com.mlav.springboot.travelagency.repository.impl;
 
-import com.springboot.homework4.model.entity.Tour;
-import com.springboot.homework4.repository.TourRepository;
+import com.mlav.springboot.travelagency.exception.TourNotFoundException;
+import com.mlav.springboot.travelagency.model.entity.Tour;
+import com.mlav.springboot.travelagency.repository.TourRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class TourRepositoryImpl implements TourRepository {
                 .filter(t -> t.getId() == id)
                 .filter(t -> !t.isDeleted())
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Tour is not found"));
+                .orElseThrow(TourNotFoundException::new);
         log.info("tour: " + tour);
         return tour;
     }
@@ -64,10 +65,8 @@ public class TourRepositoryImpl implements TourRepository {
         boolean isDeleted = list.removeIf(t -> t.getId() == id);
         if (isDeleted) {
             list.add(tour);
-
         } else {
-            log.error("Cannot update tour. Tour does not exists: " + tour);
-            throw new RuntimeException("Tour does not exist.");
+            throw new TourNotFoundException("Cannot update tour. Tour is not found!");
         }
         log.info("Tour is updated: " + tour);
         return tour;
@@ -81,7 +80,7 @@ public class TourRepositoryImpl implements TourRepository {
     public void deleteTour(long id) {
         Tour tour = list.stream()
                 .filter(t -> t.getId() == id && !t.isDeleted())
-                .findFirst().orElseThrow(() -> new RuntimeException("Cannot delete a non-existent tour "));
+                .findFirst().orElseThrow(() -> new TourNotFoundException("Cannot delete a non-existent tour "));
         list.remove(tour);
         tour.setDeleted(true);
         list.add(tour);

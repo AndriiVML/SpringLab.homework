@@ -1,7 +1,7 @@
 package com.mlav.springboot.travelagency.repository;
 
-import com.springboot.homework4.dto.UserDto;
-import com.springboot.homework4.model.entity.User;
+import com.mlav.springboot.travelagency.dto.UserDto;
+import com.mlav.springboot.travelagency.model.entity.User;
 
 import java.util.List;
 
@@ -9,6 +9,8 @@ public interface UserRepository {
     int getCount();
 
     User getUser(String login);
+
+    User getUserByEmail(String email);
 
     List<User> getAllUsers();
 

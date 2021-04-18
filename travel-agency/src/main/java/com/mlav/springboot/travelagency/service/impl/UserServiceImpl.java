@@ -1,13 +1,13 @@
 package com.mlav.springboot.travelagency.service.impl;
 
-import com.springboot.homework4.model.entity.Discount;
-import com.springboot.homework4.repository.DiscountRepository;
-import com.springboot.homework4.util.Util;
-import com.springboot.homework4.dto.UserDto;
-import com.springboot.homework4.dto.UserRegisterDto;
-import com.springboot.homework4.model.entity.User;
-import com.springboot.homework4.repository.UserRepository;
-import com.springboot.homework4.service.UserService;
+import com.mlav.springboot.travelagency.model.entity.Discount;
+import com.mlav.springboot.travelagency.repository.DiscountRepository;
+import com.mlav.springboot.travelagency.util.Util;
+import com.mlav.springboot.travelagency.dto.UserDto;
+import com.mlav.springboot.travelagency.dto.UserRegisterDto;
+import com.mlav.springboot.travelagency.model.entity.User;
+import com.mlav.springboot.travelagency.repository.UserRepository;
+import com.mlav.springboot.travelagency.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
                 .firstName(userDto.getFirstName())
                 .lastName(userDto.getLastName())
                 .email(userDto.getEmail())
-                .isBlocked(userDto.isBlocked())
+                .isBlocked(userDto.getIsBlocked())
                 .build();
         user.setId(userDto.getId());
         user.setLogin(userDto.getLogin());
@@ -71,17 +71,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Override
-    public Discount setDiscount(int step, int max) {
-        log.info("Attempt to set general discount: step={}, max={}", step, max);
-        return discountRepository.updateDiscount(step, max);
-    }
-
-    @Override
-    public Discount getDiscount() {
-        log.info("Attempt to get general discount");
-        return discountRepository.getDiscount();
-    }
 
     @Override
     public UserDto getUserByLogin(String login) {
@@ -121,11 +110,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(String login, UserDto userDto) {
-        if (!login.equals(userDto.getLogin())) {
-            String message = "Cannot update login in user";
-            log.error(message);
-            throw new RuntimeException(message);
-        }
         log.info(String.format("Attempt to update user with login=%s possibleUpdate: %s", login, userDto));
         User user = mapUserDtoToUser(userDto);
         user = userRepository.updateUser(login, user);

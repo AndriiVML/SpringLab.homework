@@ -1,21 +1,18 @@
 package com.mlav.springboot.travelagency.controller;
 
 
-import com.springboot.homework4.dto.TourDto;
-import com.springboot.homework4.dto.TourRegisterDto;
-import com.springboot.homework4.model.HotelType;
-import com.springboot.homework4.model.TourType;
-import com.springboot.homework4.service.TourService;
+import com.mlav.springboot.travelagency.dto.TourDto;
+import com.mlav.springboot.travelagency.service.TourService;
+import com.mlav.springboot.travelagency.validation.tour.TourPatchUpdate;
+import com.mlav.springboot.travelagency.validation.tour.TourPutUpdate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.util.*;
 
 @RestController
@@ -46,20 +43,21 @@ public class TourController {
         "numberOfTours":"100",
         "numberOfParticipants":"1",
         "hotelType":"THREE_STAR",
-        "tourType":"EXCURSION"
+        "tourType":"EXCURSION",
+        "isHot":"false"
     }
     */
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public TourRegisterDto createTour(@Valid @RequestBody TourRegisterDto tourRegisterDto) {
-        log.info("Attempt to create tour: " + tourRegisterDto);
-        return tourService.createTour(tourRegisterDto);
+    public TourDto createTour(@Valid @RequestBody TourDto tourDto) {
+        log.info("Attempt to create tour: " + tourDto);
+        return tourService.createTour(tourDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/{id}")
-    public TourDto updateTour(@PathVariable long id, @Valid @RequestBody TourDto tourDto) {
+    public TourDto updateTour(@PathVariable long id, @Validated(TourPutUpdate.class) @RequestBody TourDto tourDto) {
         log.info(String.format("Attempt to update tour with id=%d possibleUpdate: %s", id, tourDto));
         return tourService.updateTour(id, tourDto);
     }
@@ -89,54 +87,39 @@ public class TourController {
         }
     * */
 
-    //maybe add @Validated
-    @PatchMapping(value = "/{id}")
-    public TourDto applyPatchToTour(@PathVariable long id, @RequestBody Map<Object, Object> fields) {
-        log.info(String.format("Attempt to update tour with id=%d updateFields: %s", id, fields));
-        final TourDto tourDto = tourService.getTour(id);
-        fields.forEach((k, v) -> {
-            if (!Arrays.asList("numberOfTours",
-                    "numberOfParticipants",
-                    "price",
-                    "isHot",
-                    "hotelType",
-                    "tourType",
-                    "tourName").contains(k)) {
-                String message = "this field is not allowed: " + k;
-                log.error(message);
-                throw new RuntimeException(message);
-            }
-            Field field = ReflectionUtils.findField(TourDto.class, (String) k);
-            field.setAccessible(true);
-            if (k.equals("numberOfTours")) {
-                ReflectionUtils.setField(field, tourDto, Integer.parseInt((String) v));
-                return;//only skips this iteration
-            }
-            if (k.equals("numberOfParticipants")) {
-                ReflectionUtils.setField(field, tourDto, Integer.parseInt((String) v));
-                return;//only skips this iteration
-            }
-            if (k.equals("price")) {
-                ReflectionUtils.setField(field, tourDto, new BigDecimal((String) v));
-                return;//only skips this iteration
-            }
-            if (k.equals("isHot")) {
-                ReflectionUtils.setField(field, tourDto, Boolean.parseBoolean((String) v));
-                return;//only skips this iteration
-            }
-            if (k.equals("hotelType")) {
-                ReflectionUtils.setField(field, tourDto, HotelType.valueOf((String) v));
-                return;//only skips this iteration
-            }
-            if (k.equals("tourType")) {
-                ReflectionUtils.setField(field, tourDto, TourType.valueOf((String) v));
-                return;//only skips this iteration
-            }
 
-            ReflectionUtils.setField(field, tourDto, v);
-        });
-        return tourService.updateTour(id, tourDto);
-    }
+    /*
+    * Do not know how to valid after initialization all fields inside method
+    * */
+//
+//    @PatchMapping(value = "/{id}")
+//    public TourDto applyPatchToTour(@PathVariable long id,
+//                                    @Validated(TourPatchUpdate.class) @RequestBody TourDto tourDto) {
+//        log.info(String.format("Attempt to update tour with id=%d possibleUpdate: %s", id, tourDto));
+//        TourDto tourFromDb = tourService.getTour(id);
+//        if (tourDto.getTourName() == null) {
+//            tourDto.setTourName(tourFromDb.getTourName());
+//        }
+//        if (tourDto.getTourType() == null) {
+//            tourDto.setTourType(tourFromDb.getTourType());
+//        }
+//        if (tourDto.getHotelType() == null) {
+//            tourDto.setHotelType(tourFromDb.getHotelType());
+//        }
+//        if (tourDto.getNumberOfParticipants() == null) {
+//            tourDto.setNumberOfParticipants(tourFromDb.getNumberOfParticipants());
+//        }
+//        if(tourDto.getNumberOfTours()==null){
+//            tourDto.setNumberOfTours(tourFromDb.getNumberOfTours());
+//        }
+//        if (tourDto.getPrice() == null) {
+//            tourDto.setPrice(tourFromDb.getPrice());
+//        }
+//        if (tourDto.getIsHot() == null) {
+//            tourDto.setIsHot(tourFromDb.getIsHot());
+//        }
+//        return tourService.updateTour(id, tourDto);
+//    }
 
 
     @DeleteMapping(value = "/{id}")

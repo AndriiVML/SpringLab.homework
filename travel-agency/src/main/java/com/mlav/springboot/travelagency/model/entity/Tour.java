@@ -1,7 +1,7 @@
 package com.mlav.springboot.travelagency.model.entity;
 
-import com.springboot.homework4.model.HotelType;
-import com.springboot.homework4.model.TourType;
+import com.mlav.springboot.travelagency.model.HotelType;
+import com.mlav.springboot.travelagency.model.TourType;
 import lombok.Builder;
 import lombok.Data;
 
