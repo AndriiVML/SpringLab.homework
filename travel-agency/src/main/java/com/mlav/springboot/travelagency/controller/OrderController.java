@@ -1,5 +1,6 @@
 package com.mlav.springboot.travelagency.controller;
 
+import com.mlav.springboot.travelagency.api.OrderApi;
 import com.mlav.springboot.travelagency.controller.assembler.OrderAssembler;
 import com.mlav.springboot.travelagency.controller.model.OrderModel;
 import com.mlav.springboot.travelagency.dto.OrderDto;
@@ -17,15 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/tours/orders")
+
 @Slf4j
 @RequiredArgsConstructor
-public class OrderController {
+public class OrderController implements OrderApi {
     private final OrderService orderService;
     private final OrderAssembler orderAssembler;
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
+    @Override
     public List<OrderModel> getAllOrders() {
         log.info("Attempt to get all orders");
         List<OrderDto> allOrders = orderService.getAllOrders();
@@ -42,10 +42,15 @@ public class OrderController {
         return orderModels;
     }
 
+    @Override
+    public List<OrderModel> getUserOrders(String login) {
+        log.info("Attempt to get orders for user with login=" + login);
+        List<OrderDto> userOrders = orderService.getUserOrders(login);
+        return mapListOrderDtoToListOrderModel(userOrders);
+    }
 
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{id}")
-    public OrderModel getOrder(@PathVariable long id) {
+    @Override
+    public OrderModel getOrder(long id) {
         log.info("Attempt to get order with id=" + id);
         OrderDto entity = orderService.getOrder(id);
         return orderAssembler.toModel(entity);
@@ -61,9 +66,8 @@ public class OrderController {
     */
 
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public OrderModel orderTour(@Validated(OrderBasicInfo.class) @RequestBody OrderDto orderDto) {
+    @Override
+    public OrderModel orderTour(OrderDto orderDto) {
         log.info(
                 String.format("Attempt to make order: userLogin=%s, tourId=%d, quantity=%d",
                         orderDto.getUserLogin(), orderDto.getTourId(), orderDto.getNumberOfTours()));
@@ -71,8 +75,8 @@ public class OrderController {
         return orderAssembler.toModel(entity);
     }
 
-    @PatchMapping(value = "/{id}/change-status")
-    public OrderModel changeStatus(@PathVariable long id, @RequestParam String status) {
+    @Override
+    public OrderModel changeStatus(long id, String status) {
         Status st = Status.valueOf(status);
         OrderDto orderDto = orderService.getOrder(id);
         log.info("Attempt to change status of order");
@@ -82,8 +86,8 @@ public class OrderController {
     }
 
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable long id) {
+    @Override
+    public ResponseEntity<Void> deleteOrder(long id) {
         log.info("Attempt to delete order with id=" + id);
         orderService.deleteOrder(id);
         return ResponseEntity.noContent().build();

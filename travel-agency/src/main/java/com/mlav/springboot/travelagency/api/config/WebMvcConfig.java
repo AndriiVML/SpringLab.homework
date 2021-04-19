@@ -1,4 +1,4 @@
-package com.mlav.springboot.travelagency.config;
+package com.mlav.springboot.travelagency.api.config;
 
 import com.mlav.springboot.travelagency.interceptor.LoggerInterceptor;
 import lombok.RequiredArgsConstructor;

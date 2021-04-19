@@ -41,11 +41,11 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public List<TourPurchase> getAllOrdersForUser(User user) {
+    public List<TourPurchase> getAllOrdersForUser(String login) {
         List<TourPurchase> result = list.stream()
-                .filter(tp -> tp.getUser().getId() == user.getId())
+                .filter(tp -> tp.getUser().getLogin().equals(login))
                 .collect(Collectors.toList());
-        log.info("all orders for user {}: {}", user, result);
+        log.info("all orders for user with login={}: {}", login, result);
         return result;
     }
 

@@ -7,6 +7,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.hateoas.RepresentationModel;
 
+
+/*
+* Can split this model into two, one for user another for admin
+* */
+
 @Data
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor

@@ -2,6 +2,7 @@ package com.mlav.springboot.travelagency.service.impl;
 
 import com.mlav.springboot.travelagency.dto.OrderDto;
 import com.mlav.springboot.travelagency.dto.TourPurchaseDto;
+import com.mlav.springboot.travelagency.dto.UserDto;
 import com.mlav.springboot.travelagency.model.Status;
 import com.mlav.springboot.travelagency.model.entity.Discount;
 import com.mlav.springboot.travelagency.model.entity.Tour;
@@ -90,10 +91,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDto> getAllOrders() {
         List<OrderDto> orderDtos = new ArrayList<>();
+        log.info("Attempt to get all orders");
         for (TourPurchase tp : orderRepository.getAllOrders()) {
             orderDtos.add(mapTourPurchaseToOrderDto(tp));
         }
-        log.info("Attempt to get all orders");
+        return orderDtos;
+    }
+
+    @Override
+    public List<OrderDto> getUserOrders(String login) {
+        log.info("Attempt to get all orders for user with login=" + login);
+        List<OrderDto> orderDtos = new ArrayList<>();
+        for (TourPurchase tp : orderRepository.getAllOrdersForUser(login)) {
+            orderDtos.add(mapTourPurchaseToOrderDto(tp));
+        }
         return orderDtos;
     }
 

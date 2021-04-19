@@ -1,5 +1,6 @@
 package com.mlav.springboot.travelagency.controller;
 
+import com.mlav.springboot.travelagency.api.DiscountApi;
 import com.mlav.springboot.travelagency.controller.assembler.DiscountAssembler;
 import com.mlav.springboot.travelagency.controller.model.DiscountModel;
 import com.mlav.springboot.travelagency.dto.DiscountDto;
@@ -13,13 +14,12 @@ import javax.validation.Valid;
 
 @RestController
 @Slf4j
-@RequestMapping("/users")
 @RequiredArgsConstructor
-public class DiscountController {
+public class DiscountController implements DiscountApi {
     private final DiscountService discountService;
     private final DiscountAssembler discountAssembler;
 
-    @GetMapping("/discount")
+    @Override
     public DiscountModel getDiscount() {
         log.info("Attempt to get general discount");
         DiscountDto entity = discountService.getDiscount();
@@ -34,8 +34,8 @@ public class DiscountController {
        }
     * */
 
-    @PutMapping("/discount")
-    public DiscountModel updateDiscount(@Valid @RequestBody DiscountDto discountDto) {
+    @Override
+    public DiscountModel updateDiscount(DiscountDto discountDto) {
         log.info("Attempt to change discount: " + discountDto);
         DiscountDto entity = discountService.updateDiscount(discountDto);
         return discountAssembler.toModel(entity);

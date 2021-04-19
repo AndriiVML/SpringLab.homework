@@ -1,5 +1,6 @@
 package com.mlav.springboot.travelagency.controller;
 
+import com.mlav.springboot.travelagency.api.UserApi;
 import com.mlav.springboot.travelagency.controller.assembler.UserAssembler;
 import com.mlav.springboot.travelagency.controller.model.UserModel;
 import com.mlav.springboot.travelagency.dto.UserDto;
@@ -21,16 +22,15 @@ import java.util.List;
 @RestController
 //@RestController has @ResponseBody - that says UserDto will be automatically parsed to JSON
 @Slf4j
-@RequestMapping("/users")
+
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserApi {
 
     //injects by a type
     private final UserService userService;
     private final UserAssembler userAssembler;
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
+    @Override
     public List<UserModel> getAllUsers() {
         log.info("Attempt to get all users");
         List<UserDto> allUsers = userService.getAllUsers();
@@ -45,9 +45,8 @@ public class UserController {
         return userModels;
     }
 
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{login}")
-    public UserModel getUser(@PathVariable String login) {
+    @Override
+    public UserModel getUser(String login) {
         log.info("Attempt to get user with login=" + login);
         UserDto userDto = userService.getUserByLogin(login);
         return userAssembler.toModel(userDto);
@@ -66,9 +65,8 @@ public class UserController {
         }
     */
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public UserModel createUser(@Validated(UserRegister.class) @RequestBody UserDto userDto) {
+    @Override
+    public UserModel createUser(UserDto userDto) {
         log.info("Attempt to create user: " + userDto);
         userDto.setId(Util.generateUniqueId());
         userDto.setDiscount(0);
@@ -81,10 +79,9 @@ public class UserController {
      * Works fine when login and email is new and unique
      * */
 
-    @ResponseStatus(HttpStatus.OK)
-    @PutMapping(value = "/{login}")
-    public UserModel updateUser(@PathVariable String login,
-                                @Validated(UserPutUpdate.class) @RequestBody UserDto userDto) {
+
+    @Override
+    public UserModel updateUser(String login, UserDto userDto) {
         log.info(String.format("Attempt to update user with login=%s possibleUpdate: %s", login, userDto));
         UserDto userFromDb = userService.getUserByLogin(login);
         userDto.setId(userFromDb.getId());
@@ -95,9 +92,8 @@ public class UserController {
     }
 
 
-    @PatchMapping(value = "/{login}")
-    public UserModel applyPatchToUser(@PathVariable String login,
-                                      @Validated(UserPatchUpdate.class) @RequestBody UserDto userDto) {
+    @Override
+    public UserModel applyPatchToUser(String login, UserDto userDto) {
         log.info(String.format("Attempt to update user with login=%s on user: %s", login, userDto));
         UserDto userFromDb = userService.getUserByLogin(login);
         if (userDto.getLogin() == null) {
@@ -123,8 +119,8 @@ public class UserController {
     }
 
 
-    @PatchMapping(value = "/{login}/change-block-status")
-    public UserModel changeBlockStatus(@PathVariable String login) {
+    @Override
+    public UserModel changeBlockStatus(String login) {
         log.info("Attempt to change block-status of user with login=" + login);
         UserDto userDto = userService.getUserByLogin(login);
         userDto.setIsBlocked(!userDto.getIsBlocked());
@@ -133,8 +129,8 @@ public class UserController {
     }
 
 
-    @DeleteMapping(value = "/{login}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String login) {
+    @Override
+    public ResponseEntity<Void> deleteUser(String login) {
         log.info("Attempt to delete user with login=" + login);
         userService.deleteUser(login);
         return ResponseEntity.noContent().build();//204 deleted successfully

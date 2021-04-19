@@ -13,7 +13,7 @@ public interface OrderRepository {
 
     List<TourPurchase> getAllOrders();
 
-    List<TourPurchase> getAllOrdersForUser(User user);
+    List<TourPurchase> getAllOrdersForUser(String login);
 
     TourPurchase createOrder(TourPurchase tourPurchase);
 
