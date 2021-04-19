@@ -1,5 +1,7 @@
 package com.mlav.springboot.travelagency.controller;
 
+import com.mlav.springboot.travelagency.controller.assembler.OrderAssembler;
+import com.mlav.springboot.travelagency.controller.model.OrderModel;
 import com.mlav.springboot.travelagency.dto.OrderDto;
 import com.mlav.springboot.travelagency.model.Status;
 import com.mlav.springboot.travelagency.service.OrderService;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,20 +22,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
+    private final OrderAssembler orderAssembler;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<OrderDto> getAllOrders() {
+    public List<OrderModel> getAllOrders() {
         log.info("Attempt to get all orders");
-        return orderService.getAllOrders();
+        List<OrderDto> allOrders = orderService.getAllOrders();
+        return mapListOrderDtoToListOrderModel(allOrders);
+    }
+
+
+    private List<OrderModel> mapListOrderDtoToListOrderModel(List<OrderDto> orderDtos) {
+        List<OrderModel> orderModels = new ArrayList<>(orderDtos.size());
+        for (OrderDto item : orderDtos) {
+            orderModels.add(orderAssembler.toModel(item));
+        }
+
+        return orderModels;
     }
 
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}")
-    public OrderDto getOrder(@PathVariable long id) {
+    public OrderModel getOrder(@PathVariable long id) {
         log.info("Attempt to get order with id=" + id);
-        return orderService.getOrder(id);
+        OrderDto entity = orderService.getOrder(id);
+        return orderAssembler.toModel(entity);
     }
 
     //test in postman
@@ -47,20 +63,22 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public OrderDto orderTour(@Validated(OrderBasicInfo.class) @RequestBody OrderDto orderDto) {
+    public OrderModel orderTour(@Validated(OrderBasicInfo.class) @RequestBody OrderDto orderDto) {
         log.info(
                 String.format("Attempt to make order: userLogin=%s, tourId=%d, quantity=%d",
                         orderDto.getUserLogin(), orderDto.getTourId(), orderDto.getNumberOfTours()));
-        return orderService.orderTour(orderDto);
+        OrderDto entity = orderService.orderTour(orderDto);
+        return orderAssembler.toModel(entity);
     }
 
     @PatchMapping(value = "/{id}/change-status")
-    public OrderDto changeStatus(@PathVariable long id, @RequestParam String status) {
+    public OrderModel changeStatus(@PathVariable long id, @RequestParam String status) {
         Status st = Status.valueOf(status);
         OrderDto orderDto = orderService.getOrder(id);
         log.info("Attempt to change status of order");
         orderDto = orderService.changeStatus(st, orderDto);
-        return orderDto;
+
+        return orderAssembler.toModel(orderDto);
     }
 
 

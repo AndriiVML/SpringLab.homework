@@ -1,9 +1,10 @@
 package com.mlav.springboot.travelagency.controller;
 
 
+import com.mlav.springboot.travelagency.controller.assembler.TourAssembler;
+import com.mlav.springboot.travelagency.controller.model.TourModel;
 import com.mlav.springboot.travelagency.dto.TourDto;
 import com.mlav.springboot.travelagency.service.TourService;
-import com.mlav.springboot.travelagency.validation.tour.TourPatchUpdate;
 import com.mlav.springboot.travelagency.validation.tour.TourPutUpdate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,19 +22,30 @@ import java.util.*;
 @Slf4j
 public class TourController {
     private final TourService tourService;
+    private final TourAssembler tourAssembler;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<TourDto> getAllTours() {
+    public List<TourModel> getAllTours() {
         log.info("Attempt to get all tours");
-        return tourService.getAllTours();
+        List<TourDto> allTours = tourService.getAllTours();
+        return mapListTourDtoToListTourModel(allTours);
+    }
+
+    private List<TourModel> mapListTourDtoToListTourModel(List<TourDto> tourDtos) {
+        List<TourModel> tourModels = new ArrayList<>(tourDtos.size());
+        for (TourDto item : tourDtos) {
+            tourModels.add(tourAssembler.toModel(item));
+        }
+        return tourModels;
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}")
-    public TourDto getTour(@PathVariable long id) {
+    public TourModel getTour(@PathVariable long id) {
         log.info("Attempt to get tour with id=" + id);
-        return tourService.getTour(id);
+        TourDto entity = tourService.getTour(id);
+        return tourAssembler.toModel(entity);
     }
     //test in postman
     /*
@@ -50,16 +62,18 @@ public class TourController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public TourDto createTour(@Valid @RequestBody TourDto tourDto) {
+    public TourModel createTour(@Valid @RequestBody TourDto tourDto) {
         log.info("Attempt to create tour: " + tourDto);
-        return tourService.createTour(tourDto);
+        TourDto entity = tourService.createTour(tourDto);
+        return tourAssembler.toModel(entity);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/{id}")
-    public TourDto updateTour(@PathVariable long id, @Validated(TourPutUpdate.class) @RequestBody TourDto tourDto) {
+    public TourModel updateTour(@PathVariable long id, @Validated(TourPutUpdate.class) @RequestBody TourDto tourDto) {
         log.info(String.format("Attempt to update tour with id=%d possibleUpdate: %s", id, tourDto));
-        return tourService.updateTour(id, tourDto);
+        TourDto entity = tourService.updateTour(id, tourDto);
+        return tourAssembler.toModel(entity);
     }
 
 
@@ -89,8 +103,8 @@ public class TourController {
 
 
     /*
-    * Do not know how to valid after initialization all fields inside method
-    * */
+     * Do not know how to valid after initialization all fields inside method
+     * */
 //
 //    @PatchMapping(value = "/{id}")
 //    public TourDto applyPatchToTour(@PathVariable long id,
@@ -120,6 +134,8 @@ public class TourController {
 //        }
 //        return tourService.updateTour(id, tourDto);
 //    }
+
+    //maybe instead of patch patch only on hot status of tour like in UserController
 
 
     @DeleteMapping(value = "/{id}")

@@ -1,23 +1,22 @@
 package com.mlav.springboot.travelagency.controller;
 
+import com.mlav.springboot.travelagency.controller.assembler.UserAssembler;
+import com.mlav.springboot.travelagency.controller.model.UserModel;
 import com.mlav.springboot.travelagency.dto.UserDto;
-import com.mlav.springboot.travelagency.dto.UserRegisterDto;
-import com.mlav.springboot.travelagency.model.entity.Discount;
 import com.mlav.springboot.travelagency.service.UserService;
+import com.mlav.springboot.travelagency.util.Util;
 import com.mlav.springboot.travelagency.validation.user.UserPatchUpdate;
 import com.mlav.springboot.travelagency.validation.user.UserPutUpdate;
+import com.mlav.springboot.travelagency.validation.user.UserRegister;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 //@RestController has @ResponseBody - that says UserDto will be automatically parsed to JSON
@@ -28,20 +27,30 @@ public class UserController {
 
     //injects by a type
     private final UserService userService;
-
+    private final UserAssembler userAssembler;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getAllUsers() {
+    public List<UserModel> getAllUsers() {
         log.info("Attempt to get all users");
-        return userService.getAllUsers();
+        List<UserDto> allUsers = userService.getAllUsers();
+        return mapListUserDtoToListUserModel(allUsers);
+    }
+
+    private List<UserModel> mapListUserDtoToListUserModel(List<UserDto> userDtos) {
+        List<UserModel> userModels = new ArrayList<>(userDtos.size());
+        for (UserDto item : userDtos) {
+            userModels.add(userAssembler.toModel(item));
+        }
+        return userModels;
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{login}")
-    public UserDto getUser(@PathVariable String login) {
+    public UserModel getUser(@PathVariable String login) {
         log.info("Attempt to get user with login=" + login);
-        return userService.getUserByLogin(login);
+        UserDto userDto = userService.getUserByLogin(login);
+        return userAssembler.toModel(userDto);
     }
 
 
@@ -59,31 +68,36 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public UserRegisterDto createUser(@Valid @RequestBody UserRegisterDto userRegisterDto) {
-        log.info("Attempt to create user: " + userRegisterDto);
-        return userService.createUser(userRegisterDto);
+    public UserModel createUser(@Validated(UserRegister.class) @RequestBody UserDto userDto) {
+        log.info("Attempt to create user: " + userDto);
+        userDto.setId(Util.generateUniqueId());
+        userDto.setDiscount(0);
+        userDto.setIsBlocked(false);
+        UserDto entity = userService.createUser(userDto);
+        return userAssembler.toModel(entity);
     }
 
     /*
-    * Works fine when login and email is new and unique
-    * */
+     * Works fine when login and email is new and unique
+     * */
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/{login}")
-    public UserDto updateUser(@PathVariable String login,
-                              @Validated(UserPutUpdate.class) @RequestBody UserDto userDto) {
+    public UserModel updateUser(@PathVariable String login,
+                                @Validated(UserPutUpdate.class) @RequestBody UserDto userDto) {
         log.info(String.format("Attempt to update user with login=%s possibleUpdate: %s", login, userDto));
         UserDto userFromDb = userService.getUserByLogin(login);
         userDto.setId(userFromDb.getId());
         userDto.setDiscount(userFromDb.getDiscount());
         userDto.setIsBlocked(userFromDb.getIsBlocked());
-        return userService.updateUser(login, userDto);
+        UserDto entity = userService.updateUser(login, userDto);
+        return userAssembler.toModel(entity);
     }
 
 
     @PatchMapping(value = "/{login}")
-    public UserDto applyPatchToUser(@PathVariable String login,
-                                    @Validated(UserPatchUpdate.class) @RequestBody UserDto userDto) {
+    public UserModel applyPatchToUser(@PathVariable String login,
+                                      @Validated(UserPatchUpdate.class) @RequestBody UserDto userDto) {
         log.info(String.format("Attempt to update user with login=%s on user: %s", login, userDto));
         UserDto userFromDb = userService.getUserByLogin(login);
         if (userDto.getLogin() == null) {
@@ -104,16 +118,18 @@ public class UserController {
         userDto.setId(userFromDb.getId());
         userDto.setDiscount(userFromDb.getDiscount());
         userDto.setIsBlocked(userFromDb.getIsBlocked());
-        return userService.updateUser(login, userDto);
+        UserDto entity = userService.updateUser(login, userDto);
+        return userAssembler.toModel(entity);
     }
 
 
     @PatchMapping(value = "/{login}/change-block-status")
-    public UserDto changeBlockStatus(@PathVariable String login) {
+    public UserModel changeBlockStatus(@PathVariable String login) {
         log.info("Attempt to change block-status of user with login=" + login);
         UserDto userDto = userService.getUserByLogin(login);
         userDto.setIsBlocked(!userDto.getIsBlocked());
-        return userService.updateUser(login, userDto);
+        UserDto entity = userService.updateUser(login, userDto);
+        return userAssembler.toModel(entity);
     }
 
 

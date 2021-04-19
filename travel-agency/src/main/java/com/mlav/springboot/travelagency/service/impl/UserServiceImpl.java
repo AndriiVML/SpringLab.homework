@@ -1,10 +1,7 @@
 package com.mlav.springboot.travelagency.service.impl;
 
-import com.mlav.springboot.travelagency.model.entity.Discount;
 import com.mlav.springboot.travelagency.repository.DiscountRepository;
-import com.mlav.springboot.travelagency.util.Util;
 import com.mlav.springboot.travelagency.dto.UserDto;
-import com.mlav.springboot.travelagency.dto.UserRegisterDto;
 import com.mlav.springboot.travelagency.model.entity.User;
 import com.mlav.springboot.travelagency.repository.UserRepository;
 import com.mlav.springboot.travelagency.service.UserService;
@@ -48,29 +45,6 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    private UserRegisterDto mapUserToUserRegisterDto(User user) {
-        return UserRegisterDto.builder()
-                .login(user.getLogin())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .id(user.getId())
-                .build();
-    }
-
-    private User mapUserRegisterDtoToUser(UserRegisterDto userRegisterDto) {
-        User user = User.builder()
-                .firstName(userRegisterDto.getFirstName())
-                .lastName(userRegisterDto.getLastName())
-                .email(userRegisterDto.getEmail())
-                .build();
-        user.setId(Util.generateUniqueId());
-        user.setLogin(userRegisterDto.getLogin());
-        user.setPassword(userRegisterDto.getPassword());
-        return user;
-    }
-
-
 
     @Override
     public UserDto getUserByLogin(String login) {
@@ -92,11 +66,11 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserRegisterDto createUser(UserRegisterDto userRegisterDto) {
-        log.info("Attempt to create user: " + userRegisterDto);
-        User user = mapUserRegisterDtoToUser(userRegisterDto);
+    public UserDto createUser(UserDto userDto) {
+        log.info("Attempt to create user: " + userDto);
+        User user = mapUserDtoToUser(userDto);
         user = userRepository.createUser(user);
-        return mapUserToUserRegisterDto(user);
+        return mapUserToUserDto(user);
 
     }
 

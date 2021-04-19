@@ -1,6 +1,6 @@
-package com.mlav.springboot.travelagency.validation.order.annotations;
+package com.mlav.springboot.travelagency.validation.annotations;
 
-import com.mlav.springboot.travelagency.validation.order.validator.UserExistsValidator;
+import com.mlav.springboot.travelagency.validation.validator.UserExistsValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

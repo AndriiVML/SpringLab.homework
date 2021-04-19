@@ -1,8 +1,8 @@
-package com.mlav.springboot.travelagency.validation.discount.validator;
+package com.mlav.springboot.travelagency.validation.validator;
 
 
 import com.mlav.springboot.travelagency.dto.DiscountDto;
-import com.mlav.springboot.travelagency.validation.discount.annotations.DiscountConstraint;
+import com.mlav.springboot.travelagency.validation.annotations.DiscountConstraint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

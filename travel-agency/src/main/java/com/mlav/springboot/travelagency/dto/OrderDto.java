@@ -4,12 +4,11 @@ import com.mlav.springboot.travelagency.model.Status;
 import com.mlav.springboot.travelagency.validation.order.OrderBasicInfo;
 import com.mlav.springboot.travelagency.validation.order.OrderCustomAnnotations;
 import com.mlav.springboot.travelagency.validation.order.OrderDefaultAnnotations;
-import com.mlav.springboot.travelagency.validation.order.annotations.TourExistsConstraint;
-import com.mlav.springboot.travelagency.validation.order.annotations.UserExistsConstraint;
+import com.mlav.springboot.travelagency.validation.annotations.TourExistsConstraint;
+import com.mlav.springboot.travelagency.validation.annotations.UserExistsConstraint;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.GroupSequence;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;

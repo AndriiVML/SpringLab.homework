@@ -1,10 +1,8 @@
-package com.mlav.springboot.travelagency.validation.order.validator;
+package com.mlav.springboot.travelagency.validation.validator;
 
-import com.mlav.springboot.travelagency.dto.TourDto;
 import com.mlav.springboot.travelagency.exception.TourNotFoundException;
-import com.mlav.springboot.travelagency.exception.UserNotFoundException;
 import com.mlav.springboot.travelagency.service.TourService;
-import com.mlav.springboot.travelagency.validation.order.annotations.TourExistsConstraint;
+import com.mlav.springboot.travelagency.validation.annotations.TourExistsConstraint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

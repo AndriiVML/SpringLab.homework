@@ -1,9 +1,9 @@
-package com.mlav.springboot.travelagency.validation.user.validator;
+package com.mlav.springboot.travelagency.validation.validator;
 
 
 import com.mlav.springboot.travelagency.exception.UserNotFoundException;
 import com.mlav.springboot.travelagency.repository.UserRepository;
-import com.mlav.springboot.travelagency.validation.user.annotations.LoginUniqueConstraint;
+import com.mlav.springboot.travelagency.validation.annotations.EmailUniqueConstraint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,21 +12,21 @@ import javax.validation.ConstraintValidatorContext;
 
 @Component
 @RequiredArgsConstructor
-public class LoginUniqueValidator implements
-        ConstraintValidator<LoginUniqueConstraint, String> {
+public class EmailUniqueValidator implements
+        ConstraintValidator<EmailUniqueConstraint, String> {
 
     private final UserRepository userRepository;
 
     @Override
-    public void initialize(LoginUniqueConstraint loginUnique) {
+    public void initialize(EmailUniqueConstraint emailUnique) {
     }
 
     @Override
-    public boolean isValid(String login,
+    public boolean isValid(String email,
                            ConstraintValidatorContext cxt) {
         boolean isUnique = false;
         try {
-            userRepository.getUser(login);
+            userRepository.getUserByEmail(email);
         } catch (UserNotFoundException ex) {
             isUnique = true;
         }

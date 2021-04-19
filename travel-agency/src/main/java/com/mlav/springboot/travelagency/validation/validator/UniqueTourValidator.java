@@ -1,8 +1,8 @@
-package com.mlav.springboot.travelagency.validation.tour.validator;
+package com.mlav.springboot.travelagency.validation.validator;
 
 import com.mlav.springboot.travelagency.dto.TourDto;
 import com.mlav.springboot.travelagency.service.TourService;
-import com.mlav.springboot.travelagency.validation.tour.annotations.UniqueTourConstraint;
+import com.mlav.springboot.travelagency.validation.annotations.UniqueTourConstraint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

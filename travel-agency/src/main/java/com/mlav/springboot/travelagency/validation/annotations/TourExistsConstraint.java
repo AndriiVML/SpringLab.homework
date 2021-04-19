@@ -1,6 +1,6 @@
-package com.mlav.springboot.travelagency.validation.order.annotations;
+package com.mlav.springboot.travelagency.validation.annotations;
 
-import com.mlav.springboot.travelagency.validation.order.validator.TourExistsValidator;
+import com.mlav.springboot.travelagency.validation.validator.TourExistsValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

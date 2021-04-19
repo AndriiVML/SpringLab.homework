@@ -1,7 +1,7 @@
-package com.mlav.springboot.travelagency.validation.user.validator;
+package com.mlav.springboot.travelagency.validation.validator;
 
-import com.mlav.springboot.travelagency.dto.UserRegisterDto;
-import com.mlav.springboot.travelagency.validation.user.annotations.PasswordsValueMatchConstraint;
+import com.mlav.springboot.travelagency.dto.UserDto;
+import com.mlav.springboot.travelagency.validation.annotations.PasswordsValueMatchConstraint;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -16,11 +16,11 @@ public class PasswordValueMatchValidator
     public boolean isValid(Object obj,
                            ConstraintValidatorContext context) {
 
-        UserRegisterDto userRegisterDto = (UserRegisterDto) obj;
+        UserDto userDto = (UserDto) obj;
 
-        String fieldValue = userRegisterDto.getPassword();
+        String fieldValue = userDto.getPassword();
 
-        String fieldMatchValue = userRegisterDto.getRepeatPassword();
+        String fieldMatchValue = userDto.getRepeatPassword();
 
         if (fieldValue != null) {
             return fieldValue.equals(fieldMatchValue);

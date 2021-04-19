@@ -1,5 +1,7 @@
 package com.mlav.springboot.travelagency.controller;
 
+import com.mlav.springboot.travelagency.controller.assembler.DiscountAssembler;
+import com.mlav.springboot.travelagency.controller.model.DiscountModel;
 import com.mlav.springboot.travelagency.dto.DiscountDto;
 import com.mlav.springboot.travelagency.service.DiscountService;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +17,13 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class DiscountController {
     private final DiscountService discountService;
+    private final DiscountAssembler discountAssembler;
 
     @GetMapping("/discount")
-    public DiscountDto getDiscount() {
+    public DiscountModel getDiscount() {
         log.info("Attempt to get general discount");
-        return discountService.getDiscount();
+        DiscountDto entity = discountService.getDiscount();
+        return discountAssembler.toModel(entity);
     }
 
     /*
@@ -31,14 +35,15 @@ public class DiscountController {
     * */
 
     @PutMapping("/discount")
-    public DiscountDto updateDiscount(@Valid @RequestBody DiscountDto discountDto) {
+    public DiscountModel updateDiscount(@Valid @RequestBody DiscountDto discountDto) {
         log.info("Attempt to change discount: " + discountDto);
-        return discountService.updateDiscount(discountDto);
+        DiscountDto entity = discountService.updateDiscount(discountDto);
+        return discountAssembler.toModel(entity);
     }
 
     /*
-    * Do not know how to validate inside method not as parameter @Valid
-    * */
+     * Do not know how to validate inside method not as parameter @Valid
+     * */
 //
 //    @PatchMapping("/discount")
 //    public DiscountDto applyPatchToDiscount(@RequestBody DiscountDto discountDto) {
@@ -56,7 +61,6 @@ public class DiscountController {
 ////
 //        return discountService.updateDiscount(discountDto);
 //    }
-
 
 
 }

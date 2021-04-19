@@ -1,6 +1,6 @@
-package com.mlav.springboot.travelagency.validation.tour.annotations;
+package com.mlav.springboot.travelagency.validation.annotations;
 
-import com.mlav.springboot.travelagency.validation.tour.validator.UniqueTourValidator;
+import com.mlav.springboot.travelagency.validation.validator.PasswordValueMatchValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -9,11 +9,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = UniqueTourValidator.class)
+@Constraint(validatedBy = PasswordValueMatchValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UniqueTourConstraint {
-    String message() default "There is already the same tour with the same fields";
+public @interface PasswordsValueMatchConstraint {
+    String message() default "Password do not match";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

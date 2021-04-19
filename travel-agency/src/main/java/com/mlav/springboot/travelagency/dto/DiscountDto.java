@@ -2,7 +2,7 @@ package com.mlav.springboot.travelagency.dto;
 
 import com.mlav.springboot.travelagency.validation.discount.DiscountCustomAnnotations;
 import com.mlav.springboot.travelagency.validation.discount.DiscountDefaultAnnotations;
-import com.mlav.springboot.travelagency.validation.discount.annotations.DiscountConstraint;
+import com.mlav.springboot.travelagency.validation.annotations.DiscountConstraint;
 import lombok.Builder;
 import lombok.Data;
 

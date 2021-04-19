@@ -1,8 +1,8 @@
-package com.mlav.springboot.travelagency.validation.user.annotations;
+package com.mlav.springboot.travelagency.validation.annotations;
 
 
 
-import com.mlav.springboot.travelagency.validation.user.validator.EmailUniqueValidator;
+import com.mlav.springboot.travelagency.validation.validator.EmailUniqueValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

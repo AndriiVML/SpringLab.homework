@@ -1,8 +1,6 @@
-package com.mlav.springboot.travelagency.validation.discount.annotations;
+package com.mlav.springboot.travelagency.validation.annotations;
 
-
-
-import com.mlav.springboot.travelagency.validation.discount.validator.DiscountValidator;
+import com.mlav.springboot.travelagency.validation.validator.UniqueTourValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -11,11 +9,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = DiscountValidator.class)
+@Constraint(validatedBy = UniqueTourValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DiscountConstraint {
-    String message() default "Max cannot be less that step";
+public @interface UniqueTourConstraint {
+    String message() default "There is already the same tour with the same fields";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

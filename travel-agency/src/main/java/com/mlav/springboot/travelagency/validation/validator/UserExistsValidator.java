@@ -1,8 +1,8 @@
-package com.mlav.springboot.travelagency.validation.order.validator;
+package com.mlav.springboot.travelagency.validation.validator;
 
 import com.mlav.springboot.travelagency.exception.UserNotFoundException;
 import com.mlav.springboot.travelagency.service.UserService;
-import com.mlav.springboot.travelagency.validation.order.annotations.UserExistsConstraint;
+import com.mlav.springboot.travelagency.validation.annotations.UserExistsConstraint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
