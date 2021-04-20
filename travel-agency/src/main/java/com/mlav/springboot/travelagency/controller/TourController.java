@@ -102,6 +102,7 @@ public class TourController implements TourApi {
 
     /*
      * Do not know how to valid after initialization all fields inside method
+     * maybe solution: create new Exception and trigger in this method as validation error
      * */
 //
 //    @PatchMapping(value = "/{id}")

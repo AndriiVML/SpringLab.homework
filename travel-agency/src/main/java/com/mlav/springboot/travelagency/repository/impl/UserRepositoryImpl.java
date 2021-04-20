@@ -80,9 +80,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User updateUser(String login, User user) {
-        boolean isDeleted = list.removeIf(u -> login.equals(u.getLogin()));
+        boolean isDeletedUser = list.removeIf(u -> login.equals(u.getLogin()));
+        boolean isDeletedAccount = accounts.removeIf(a -> login.equals(a.getLogin()));
 
-        if (isDeleted) {
+        if (isDeletedUser && isDeletedAccount) {
+            accounts.add(user);
             list.add(user);
         } else {
             throw new UserNotFoundException("Cannot update user. User is not found!");

@@ -12,3 +12,11 @@ info:
     description: This is Spring Boot Application
     version: 1.0.0
   java-vendor: ${java.specification.vendor}
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/travel_agency
+    username: root
+    password: 3707
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
