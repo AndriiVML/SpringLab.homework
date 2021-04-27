@@ -68,9 +68,7 @@ public class UserController implements UserApi {
     @Override
     public UserModel createUser(UserDto userDto) {
         log.info("Attempt to create user: " + userDto);
-        userDto.setId(Util.generateUniqueId());
-        userDto.setDiscount(0);
-        userDto.setIsBlocked(false);
+
         UserDto entity = userService.createUser(userDto);
         return userAssembler.toModel(entity);
     }

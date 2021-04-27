@@ -1,5 +1,7 @@
 package com.mlav.springboot.travelagency.model;
 
+import javax.persistence.Entity;
+
 public enum Role {
     ADMIN, USER, MODERATOR;
 

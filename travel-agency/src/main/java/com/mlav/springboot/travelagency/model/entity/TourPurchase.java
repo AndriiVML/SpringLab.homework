@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class TourPurchase extends Entity {
+public class TourPurchase  {
+    private Long id;
     private Tour tour;
     private User user;
     private BigDecimal actualPrice;

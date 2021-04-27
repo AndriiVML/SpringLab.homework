@@ -28,7 +28,7 @@ public class TourServiceImpl implements TourService {
                 .hotelType(tour.getHotelType())
                 .numberOfTours(tour.getNumberOfTours())
                 .numberOfParticipants(tour.getNumberOfParticipants())
-                .isHot(tour.isHot())
+                .isHot(tour.getIsHot())
                 .build();
     }
 
@@ -45,7 +45,6 @@ public class TourServiceImpl implements TourService {
         tour.setId(Util.generateUniqueId());
         return tour;
     }
-
 
 
     @Override

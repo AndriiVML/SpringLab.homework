@@ -2,23 +2,24 @@ package com.mlav.springboot.travelagency.repository;
 
 import com.mlav.springboot.travelagency.dto.UserDto;
 import com.mlav.springboot.travelagency.model.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface UserRepository {
-    int getCount();
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    User getUser(String login);
+    default int getCount() {
+        return findAll().size();
+    }
 
-    User getUserByEmail(String email);
+//    Optional<User> findByLogin(String login);
+    Optional<User> findByAccount_Login(String login);
 
-    List<User> getAllUsers();
 
-    User createUser(User user);
+    Optional<User> findByEmail(String email);
 
-    User updateUser(String login, User user);
-
-    void deleteUser(String login);
+//    void deleteByAccount_Login(String login);
 
 
 }

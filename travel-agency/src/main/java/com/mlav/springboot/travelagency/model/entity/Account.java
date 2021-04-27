@@ -1,12 +1,22 @@
 package com.mlav.springboot.travelagency.model.entity;
+import lombok.*;
 
-
-import com.mlav.springboot.travelagency.model.Role;
-import lombok.Data;
+import javax.persistence.*;
 
 @Data
-public class Account extends Entity{
+@Entity
+@Table(name = "account")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Account {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(unique = true)
     private String login;
     private String password;
-    private Role role;
+    @Column(name = "role_id")
+    private int roleId;
+
 }

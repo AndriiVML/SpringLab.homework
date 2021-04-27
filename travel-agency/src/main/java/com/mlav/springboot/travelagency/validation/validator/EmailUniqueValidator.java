@@ -26,7 +26,7 @@ public class EmailUniqueValidator implements
                            ConstraintValidatorContext cxt) {
         boolean isUnique = false;
         try {
-            userRepository.getUserByEmail(email);
+            userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         } catch (UserNotFoundException ex) {
             isUnique = true;
         }

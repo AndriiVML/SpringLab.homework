@@ -1,23 +1,16 @@
 package com.mlav.springboot.travelagency.model.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-public class Discount extends Entity {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Discount  {
+    private Long id;
     private Integer step;
     private Integer max;
-
-    public Discount() {
-        setId(0);
-        step = 5;
-        max = 20;
-    }
-
-    public Discount(Integer step, Integer max) {
-        setId(0);
-        this.step = step;
-        this.max = max;
-    }
 }

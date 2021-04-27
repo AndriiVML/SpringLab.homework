@@ -35,7 +35,7 @@ public class TourRepositoryImpl implements TourRepository {
     public Tour getTour(long id) {
         Tour tour = list.stream()
                 .filter(t -> t.getId() == id)
-                .filter(t -> !t.isDeleted())
+                .filter(t -> !t.getIsDeleted())
                 .findFirst()
                 .orElseThrow(TourNotFoundException::new);
         log.info("tour: " + tour);
@@ -45,7 +45,7 @@ public class TourRepositoryImpl implements TourRepository {
     @Override
     public List<Tour> getAllTours() {
         List<Tour> result = list.stream()
-                .filter(tour -> !tour.isDeleted())
+                .filter(tour -> !tour.getIsDeleted())
                 .collect(Collectors.toList());
         log.info("all tours: " + result);
         return result;
@@ -79,10 +79,10 @@ public class TourRepositoryImpl implements TourRepository {
     @Override
     public void deleteTour(long id) {
         Tour tour = list.stream()
-                .filter(t -> t.getId() == id && !t.isDeleted())
+                .filter(t -> t.getId() == id && !t.getIsDeleted())
                 .findFirst().orElseThrow(() -> new TourNotFoundException("Cannot delete a non-existent tour "));
         list.remove(tour);
-        tour.setDeleted(true);
+        tour.setIsDeleted(true);
         list.add(tour);
         log.info("Tour is deleted");
     }

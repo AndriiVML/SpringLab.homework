@@ -27,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
+    //    private final UserRepository userRepository;
     private final TourRepository tourRepository;
     private final DiscountRepository discountRepository;
 
@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
 
     private TourPurchase mapOrderDtoToTourPurchase(OrderDto orderDto) {
         TourPurchase tourPurchase = TourPurchase.builder()
-                .user(userRepository.getUser(orderDto.getUserLogin()))
+//                .user(userRepository.getUser(orderDto.getUserLogin()))
                 .tour(tourRepository.getTour(orderDto.getTourId()))
                 .actualPrice(orderDto.getActualPrice())
                 .dateTimeOfPurchase(orderDto.getDateTimeOfPurchase())
@@ -73,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderDto mapTourPurchaseToOrderDto(TourPurchase tourPurchase) {
         return OrderDto.builder()
                 .tourId(tourPurchase.getTour().getId())
-                .userLogin(tourPurchase.getUser().getLogin())
+                .userLogin(tourPurchase.getUser().getAccount().getLogin())
                 .actualPrice(tourPurchase.getActualPrice())
                 .dateTimeOfPurchase(tourPurchase.getDateTimeOfPurchase())
                 .status(tourPurchase.getStatus())
@@ -111,21 +111,21 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto orderTour(OrderDto orderDto) {
         Tour tour = tourRepository.getTour(orderDto.getTourId());
-        User user = userRepository.getUser(orderDto.getUserLogin());
+//        User user = userRepository.getUser(orderDto.getUserLogin());
         TourPurchase tourPurchase = TourPurchase.builder()
-                .user(user)
+//                .user(user)
                 .tour(tour)
                 .numberOfTours(orderDto.getNumberOfTours())
-                .actualPrice(Util.getActualPrice(tour.getPrice(), user.getDiscount(), orderDto.getNumberOfTours()))
+//                .actualPrice(Util.getActualPrice(tour.getPrice(), user.getDiscount(), orderDto.getNumberOfTours()))
                 .status(Status.REGISTERED)
                 .dateTimeOfPurchase(LocalDateTime.now())
                 .build();
         tourPurchase.setId(Util.generateUniqueId());
         log.info("Attempt to make order: " + tourPurchase);
         tourPurchase = orderRepository.createOrder(tourPurchase);
-        log.info(String.format("Attempt to increase discount of user: %s after ordering tour", user));
-        user = updateUserDiscount(user);
-        userRepository.updateUser(orderDto.getUserLogin(), user);
+//        log.info(String.format("Attempt to increase discount of user: %s after ordering tour", user));
+//        user = updateUserDiscount(user);
+//        userRepository.updateUser(orderDto.getUserLogin(), user);
         return mapTourPurchaseToOrderDto(tourPurchase);
     }
 
