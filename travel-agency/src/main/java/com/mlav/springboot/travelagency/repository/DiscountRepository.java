@@ -1,9 +1,11 @@
 package com.mlav.springboot.travelagency.repository;
 
 import com.mlav.springboot.travelagency.model.entity.Discount;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface DiscountRepository {
-    Discount getDiscount();
 
-    Discount updateDiscount(Discount discount1);
+@Repository
+public interface DiscountRepository extends JpaRepository<Discount, Long> {
+
 }

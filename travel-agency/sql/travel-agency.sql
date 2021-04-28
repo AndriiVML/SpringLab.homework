@@ -143,7 +143,7 @@ CREATE TABLE discount(
 );
 
 #default discount
-INSERT INTO discount(step,max) VALUES (5,20);
+INSERT INTO discount(id,step,max) VALUES (1,5,20);
 
 
 

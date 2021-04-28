@@ -13,12 +13,13 @@ import lombok.EqualsAndHashCode;
 import javax.validation.GroupSequence;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.math.BigDecimal;
 
 @Data
 @Builder
 @EqualsAndHashCode
-@GroupSequence({TourDto.class,TourDefaultAnnotations.class,TourCustomAnnotations.class})
+@GroupSequence({TourDto.class, TourDefaultAnnotations.class, TourCustomAnnotations.class})
 @UniqueTourConstraint(groups = {TourCustomAnnotations.class, TourPutUpdate.class})
 public class TourDto {
     @EqualsAndHashCode.Exclude
@@ -45,7 +46,7 @@ public class TourDto {
             groups = {TourPutUpdate.class, TourDefaultAnnotations.class})
     @Min(value = 1, message = "Number of participants can't be less that 1"
             , groups = {TourDefaultAnnotations.class,
-            TourPutUpdate.class, })
+            TourPutUpdate.class,})
     private Integer numberOfParticipants;
 
     @EqualsAndHashCode.Exclude
@@ -59,4 +60,7 @@ public class TourDto {
     @EqualsAndHashCode.Include
     @NotNull(message = "Tour type is a mandatory field", groups = {TourPutUpdate.class, TourDefaultAnnotations.class})
     private TourType tourType;
+
+    @Null(message = "Cannot set this field manually", groups = {TourDefaultAnnotations.class, TourPutUpdate.class})
+    private Boolean isDeleted;
 }

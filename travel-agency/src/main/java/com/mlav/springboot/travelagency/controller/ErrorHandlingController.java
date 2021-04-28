@@ -1,5 +1,7 @@
 package com.mlav.springboot.travelagency.controller;
 
+import com.mlav.springboot.travelagency.exception.DiscountPatchException;
+import com.mlav.springboot.travelagency.exception.ValidationException;
 import com.mlav.springboot.travelagency.model.entity.Error;
 import com.mlav.springboot.travelagency.exception.ServiceException;
 import com.mlav.springboot.travelagency.model.ErrorType;
@@ -29,17 +31,27 @@ public class ErrorHandlingController {
                 .collect(Collectors.toList());
     }
 
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<Error> handleValidationException(ValidationException ex) {
+        log.error("handleValidationException: message {}", ex.getMessages());
+        return ex.getMessages().stream()
+                .map(message -> new Error(message, ex.getErrorType(), LocalDateTime.now()))
+                .collect(Collectors.toList());
+    }
+
+
     @ExceptionHandler(ServiceException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Error handleServiceException(ServiceException ex) {
         log.error("handlerServiceException: " + ex.getMessage(), ex);
-        return new Error(ex.getMessage(),ex.getErrorType(),LocalDateTime.now());
+        return new Error(ex.getMessage(), ex.getErrorType(), LocalDateTime.now());
     }
 
-//    @ExceptionHandler(Exception.class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    public Error handleException(Exception ex) {
-//        log.error("handleException: message {}", ex.getMessage());
-//        return new Error(ex.getMessage(), ErrorType.FATAL_ERROR_TYPE, LocalDateTime.now());
-//    }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Error handleException(Exception ex) {
+        log.error("handleException: message {}", ex.getMessage());
+        return new Error(ex.getMessage(), ErrorType.FATAL_ERROR_TYPE, LocalDateTime.now());
+    }
 }

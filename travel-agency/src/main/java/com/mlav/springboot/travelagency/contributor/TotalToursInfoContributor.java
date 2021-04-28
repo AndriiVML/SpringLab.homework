@@ -12,13 +12,15 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class TotalToursInfoContributor implements InfoContributor {
+
     private final TourRepository tourRepository;
+
     @Override
     public void contribute(Info.Builder builder) {
         Map<String, Integer> tourDetails = new HashMap<>();
         tourDetails.put("count", tourRepository.getCount());
-        tourDetails.put("active tours",tourRepository.getCountOfActiveTours());
-        tourDetails.put("disabled tours",tourRepository.getCountOfDisabledTours());
+        tourDetails.put("active tours", tourRepository.getCountOfActiveTours());
+        tourDetails.put("disabled tours", tourRepository.getCountOfDisabledTours());
         builder.withDetail("tours", tourDetails);
     }
 }

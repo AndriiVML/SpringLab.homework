@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
         log.info(String.format("Attempt to update user with login=%s possibleUpdate: %s", login, userDto));
         User user = mapUserDtoToUser(userDto);
         User userFromDb = userRepository.findByAccount_Login(login)
-                .orElseThrow(() -> new UserNotFoundException("Cannot update a non-existent user"));
+                .orElseThrow(() -> new UserNotFoundException("Cannot update user. User does not exist"));
         //automatically sets account id
         user.setId(userFromDb.getId());
 //        accountRepository.save(user.getAccount());

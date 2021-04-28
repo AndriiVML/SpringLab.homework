@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public class Util {
+    public static final Long DISCOUNT_ID = 1L;
+
     /*
      * function designed for generating id, like id is given from the database
      * */

@@ -4,10 +4,7 @@ import com.mlav.springboot.travelagency.controller.model.DiscountModel;
 import com.mlav.springboot.travelagency.dto.DiscountDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -19,7 +16,13 @@ public interface DiscountApi {
     @GetMapping("/discount")
     DiscountModel getDiscount();
 
-    @ApiOperation("Update discount in database")
+    @ApiOperation("Update(put) discount in database")
     @PutMapping("/discount")
     DiscountModel updateDiscount(@Valid @RequestBody DiscountDto discountDto);
+
+
+    @ApiOperation("Update(patch) discount int database")
+    @PatchMapping("/discount")
+    public DiscountDto applyPatchToDiscount(@RequestBody DiscountDto discountDto);
+
 }

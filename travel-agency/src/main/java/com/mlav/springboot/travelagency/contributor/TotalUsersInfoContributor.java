@@ -12,12 +12,12 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class TotalUsersInfoContributor implements InfoContributor {
-//    private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public void contribute(Info.Builder builder) {
         Map<String, Integer> userDetails = new HashMap<>();
-//        userDetails.put("count", userRepository.getCount());
+        userDetails.put("count", userRepository.getCount());
         builder.withDetail("users", userDetails);
     }
 }

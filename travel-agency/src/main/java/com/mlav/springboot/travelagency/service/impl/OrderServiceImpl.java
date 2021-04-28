@@ -3,6 +3,7 @@ package com.mlav.springboot.travelagency.service.impl;
 import com.mlav.springboot.travelagency.dto.OrderDto;
 import com.mlav.springboot.travelagency.dto.TourPurchaseDto;
 import com.mlav.springboot.travelagency.dto.UserDto;
+import com.mlav.springboot.travelagency.exception.*;
 import com.mlav.springboot.travelagency.model.Status;
 import com.mlav.springboot.travelagency.model.entity.Discount;
 import com.mlav.springboot.travelagency.model.entity.Tour;
@@ -18,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +30,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
-    //    private final UserRepository userRepository;
+    private final UserRepository userRepository;
     private final TourRepository tourRepository;
     private final DiscountRepository discountRepository;
 
@@ -60,10 +63,10 @@ public class OrderServiceImpl implements OrderService {
     private TourPurchase mapOrderDtoToTourPurchase(OrderDto orderDto) {
         TourPurchase tourPurchase = TourPurchase.builder()
 //                .user(userRepository.getUser(orderDto.getUserLogin()))
-                .tour(tourRepository.getTour(orderDto.getTourId()))
+//                .tour(tourRepository.getTour(orderDto.getTourId()))
                 .actualPrice(orderDto.getActualPrice())
                 .dateTimeOfPurchase(orderDto.getDateTimeOfPurchase())
-                .status(orderDto.getStatus())
+                .statusId(orderDto.getStatus().ordinal())
                 .numberOfTours(orderDto.getNumberOfTours())
                 .build();
         tourPurchase.setId(orderDto.getId());
@@ -76,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
                 .userLogin(tourPurchase.getUser().getAccount().getLogin())
                 .actualPrice(tourPurchase.getActualPrice())
                 .dateTimeOfPurchase(tourPurchase.getDateTimeOfPurchase())
-                .status(tourPurchase.getStatus())
+                .status(Status.getStatus(tourPurchase))
                 .numberOfTours(tourPurchase.getNumberOfTours())
                 .id(tourPurchase.getId())
                 .build();
@@ -85,52 +88,70 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto getOrder(long id) {
         log.info("Attempt to get order with id=" + id);
-        return mapTourPurchaseToOrderDto(orderRepository.getOrder(id));
+        TourPurchase tourPurchase = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
+        log.info("Order: {}", tourPurchase);
+        return mapTourPurchaseToOrderDto(tourPurchase);
     }
 
     @Override
     public List<OrderDto> getAllOrders() {
         List<OrderDto> orderDtos = new ArrayList<>();
         log.info("Attempt to get all orders");
-        for (TourPurchase tp : orderRepository.getAllOrders()) {
+        List<TourPurchase> orders = orderRepository.findAll();
+        for (TourPurchase tp : orders) {
             orderDtos.add(mapTourPurchaseToOrderDto(tp));
         }
+        log.info("All orders: {}", orders);
         return orderDtos;
     }
 
     @Override
     public List<OrderDto> getUserOrders(String login) {
         log.info("Attempt to get all orders for user with login=" + login);
+        User user = userRepository.findByAccount_Login(login)
+                .orElseThrow(() -> new UserNotFoundException("Cannot find orders for user. User does not exist"));
         List<OrderDto> orderDtos = new ArrayList<>();
-        for (TourPurchase tp : orderRepository.getAllOrdersForUser(login)) {
+        List<TourPurchase> userOrders = orderRepository.findAllByUser(user);
+        for (TourPurchase tp : userOrders) {
             orderDtos.add(mapTourPurchaseToOrderDto(tp));
         }
+        log.info("All orders for user with login={}: {}", login, userOrders);
         return orderDtos;
     }
 
     @Override
+    @Transactional(rollbackOn = SQLException.class)
     public OrderDto orderTour(OrderDto orderDto) {
-        Tour tour = tourRepository.getTour(orderDto.getTourId());
-//        User user = userRepository.getUser(orderDto.getUserLogin());
+        //
+        //
+        //QUANITYT 0 - OKAY, -1 SERVER EROR - FATAL ERROR NEED FIX
+        //
+        //
+        Tour tour = tourRepository.findById(orderDto.getTourId())
+                .orElseThrow(() -> new TourNotFoundException("Cannot order tour. Tour does not exist"));
+        User user = userRepository.findByAccount_Login(orderDto.getUserLogin())
+                .orElseThrow(() -> new UserNotFoundException("Cannot order tour. User does not exist"));
         TourPurchase tourPurchase = TourPurchase.builder()
-//                .user(user)
+                .user(user)
                 .tour(tour)
                 .numberOfTours(orderDto.getNumberOfTours())
-//                .actualPrice(Util.getActualPrice(tour.getPrice(), user.getDiscount(), orderDto.getNumberOfTours()))
-                .status(Status.REGISTERED)
+                .actualPrice(Util.getActualPrice(tour.getPrice(), user.getDiscount(), orderDto.getNumberOfTours()))
+                .statusId(Status.REGISTERED.ordinal())
                 .dateTimeOfPurchase(LocalDateTime.now())
                 .build();
         tourPurchase.setId(Util.generateUniqueId());
         log.info("Attempt to make order: " + tourPurchase);
-        tourPurchase = orderRepository.createOrder(tourPurchase);
-//        log.info(String.format("Attempt to increase discount of user: %s after ordering tour", user));
-//        user = updateUserDiscount(user);
-//        userRepository.updateUser(orderDto.getUserLogin(), user);
+        tourPurchase = orderRepository.save(tourPurchase);
+        log.info("New order: {}", tourPurchase);
+        log.info(String.format("Attempt to increase discount of user: %s after ordering tour", user));
+        user = updateUserDiscount(user);
+        userRepository.save(user);
+        log.info("User is updated");
         return mapTourPurchaseToOrderDto(tourPurchase);
     }
 
     private User updateUserDiscount(User user) {
-        Discount discount = discountRepository.getDiscount();
+        Discount discount = discountRepository.findById(Util.DISCOUNT_ID).orElseThrow(DiscountNotFoundException::new);
         int currentDiscount = user.getDiscount();
         if (currentDiscount == discount.getMax()) {
             log.info("User discount is already maximum");
@@ -142,21 +163,40 @@ public class OrderServiceImpl implements OrderService {
         } else {
             user.setDiscount(possibleDiscount);
         }
-        log.info(String.format("User discount is changed from %d to %d", currentDiscount, user.getDiscount()));
+        log.info(String.format("Attempt to change user discount from %d to %d", currentDiscount, user.getDiscount()));
         return user;
     }
 
     @Override
     public void deleteOrder(long id) {
         log.info("Attempt to delete order with id=" + id);
-        orderRepository.deleteOrder(id);
+        TourPurchase order = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException("Cannot delete a non-existent order"));
+        orderRepository.delete(order);
+        log.info("Order is deleted");
     }
 
     @Override
-    public OrderDto changeStatus(Status status, OrderDto tourPurchase) {
-        log.info(String.format("Attempt to change order status, order: %s possibleStatus: %s", tourPurchase, status));
-        return mapTourPurchaseToOrderDto(orderRepository.changeStatus(status,
-                mapOrderDtoToTourPurchase(tourPurchase)));
+    public OrderDto changeStatus(Status status, OrderDto orderDto) {
+        log.info(String.format("Attempt to change order status, order: %s possibleStatus: %s", orderDto, status));
+        TourPurchase order = mapOrderDtoToTourPurchase(orderDto);
+        validateStatus(status, order);
+        Status previousStatus = Status.getStatus(order);
+        order.setStatusId(status.ordinal());
+        order = orderRepository.save(order);
+        log.info(String.format("Status is changed from %s to %s in order: %s", previousStatus, status, order));
+        return mapTourPurchaseToOrderDto(order);
+    }
+
+    private void validateStatus(Status status, TourPurchase tourPurchase) {
+        if (status == Status.REGISTERED) {
+            throw new NotValidStatusException(
+                    String.format("Cannot change status %s to status %s",
+                            Status.getStatus(tourPurchase), Status.REGISTERED));
+        }
+        if (Status.getStatus(tourPurchase) != Status.REGISTERED) {
+            throw new NotValidStatusException("Status is already changed");
+        }
     }
 
 }
