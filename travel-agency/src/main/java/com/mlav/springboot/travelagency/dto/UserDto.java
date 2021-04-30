@@ -2,8 +2,6 @@ package com.mlav.springboot.travelagency.dto;
 
 import com.mlav.springboot.travelagency.validation.annotations.PasswordsValueMatchConstraint;
 import com.mlav.springboot.travelagency.validation.user.*;
-import com.mlav.springboot.travelagency.validation.annotations.EmailUniqueConstraint;
-import com.mlav.springboot.travelagency.validation.annotations.LoginUniqueConstraint;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,8 +16,8 @@ import javax.validation.constraints.Null;
 public class UserDto {
     private Long id;
 
-    @LoginUniqueConstraint(groups = {UserRegister.class, UserDefaultAnnotations.class,
-            UserPatchUpdate.class, UserPutUpdate.class})
+//    @LoginUniqueConstraint(groups = {UserRegister.class, UserDefaultAnnotations.class,
+//            UserPatchUpdate.class, UserPutUpdate.class})
     @NotNull(message = "Login is a mandatory field", groups = {UserDefaultAnnotations.class, UserPutUpdate.class})
     private String login;
 
@@ -32,8 +30,8 @@ public class UserDto {
     private String lastName;
 
     @Email(groups = {UserRegister.class,UserDefaultAnnotations.class, UserPatchUpdate.class, UserPutUpdate.class})
-    @EmailUniqueConstraint(groups = {UserRegister.class,UserDefaultAnnotations.class,
-            UserPatchUpdate.class, UserPutUpdate.class})
+//    @EmailUniqueConstraint(groups = {UserRegister.class,UserDefaultAnnotations.class,
+//            UserPatchUpdate.class, UserPutUpdate.class})
     @NotNull(message = "Email is a mandatory field",
             groups = {UserRegister.class,UserDefaultAnnotations.class, UserPutUpdate.class})
     private String email;

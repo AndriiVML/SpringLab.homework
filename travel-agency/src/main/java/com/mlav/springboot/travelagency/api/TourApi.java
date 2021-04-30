@@ -2,7 +2,7 @@ package com.mlav.springboot.travelagency.api;
 
 import com.mlav.springboot.travelagency.controller.model.TourModel;
 import com.mlav.springboot.travelagency.dto.TourDto;
-import com.mlav.springboot.travelagency.validation.tour.TourPutUpdate;
+import com.mlav.springboot.travelagency.validation.tour.TourPatchUpdate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+
 @Api(tags = "Tour management API")
 @RequestMapping("/api/v1/tours")
 public interface TourApi {
@@ -33,7 +34,10 @@ public interface TourApi {
     @ApiOperation("Update tour in database(need to change at least one field(except \"numberOfTours\") to update")
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/{id}")
-    TourModel updateTour(@PathVariable long id, @Validated(TourPutUpdate.class) @RequestBody TourDto tourDto);
+    TourModel updateTour(@PathVariable long id, @Valid @RequestBody TourDto tourDto);
+
+    @PatchMapping(value = "/{id}")
+    TourDto applyPatchToTour(@PathVariable long id, @Validated(TourPatchUpdate.class) @RequestBody TourDto tourDto);
 
     @ApiOperation("Delete tour from database")
     @DeleteMapping(value = "/{id}")

@@ -73,10 +73,6 @@ public class UserController implements UserApi {
         return userAssembler.toModel(entity);
     }
 
-    /*
-     * Works fine when login and email is new and unique
-     * */
-
 
     @Override
     public UserModel updateUser(String login, UserDto userDto) {

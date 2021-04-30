@@ -1,11 +1,11 @@
 package com.mlav.springboot.travelagency.controller;
 
-import com.mlav.springboot.travelagency.exception.DiscountPatchException;
-import com.mlav.springboot.travelagency.exception.ValidationException;
 import com.mlav.springboot.travelagency.model.entity.Error;
 import com.mlav.springboot.travelagency.exception.ServiceException;
 import com.mlav.springboot.travelagency.model.ErrorType;
 import lombok.extern.slf4j.Slf4j;
+import com.mlav.springboot.travelagency.exception.ValidationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -47,6 +47,28 @@ public class ErrorHandlingController {
         log.error("handlerServiceException: " + ex.getMessage(), ex);
         return new Error(ex.getMessage(), ex.getErrorType(), LocalDateTime.now());
     }
+
+    //DataIntegrityViolationException is good, SQLIntegrityConstraintViolationException - not good,
+    //because Exception will handle it, without proper message
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        //nested SQLIntegrityException
+        log.error("handlerDataIntegrityViolationException: " + ex.getCause().getCause(), ex);
+        final String causeOfException = ex.getCause().getCause().toString();
+        String message;
+        if (causeOfException.contains("login")) {
+            message = "Login must be unique";
+        } else if (causeOfException.contains("email")) {
+            message = "Email must be unique";
+        } else if (causeOfException.contains("tour_unique")) {
+            message = "Tour must be unique";
+        } else {
+            message = ex.getMessage();
+        }
+        return new Error(message, ErrorType.VALIDATION_ERROR_TYPE, LocalDateTime.now());
+    }
+
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

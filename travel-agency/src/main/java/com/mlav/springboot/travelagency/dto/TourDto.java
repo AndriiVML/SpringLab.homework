@@ -2,15 +2,10 @@ package com.mlav.springboot.travelagency.dto;
 
 import com.mlav.springboot.travelagency.model.HotelType;
 import com.mlav.springboot.travelagency.model.TourType;
-import com.mlav.springboot.travelagency.validation.tour.TourCustomAnnotations;
-import com.mlav.springboot.travelagency.validation.tour.TourDefaultAnnotations;
-import com.mlav.springboot.travelagency.validation.tour.TourPutUpdate;
-import com.mlav.springboot.travelagency.validation.annotations.UniqueTourConstraint;
+import com.mlav.springboot.travelagency.validation.tour.TourPatchUpdate;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-import javax.validation.GroupSequence;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -18,49 +13,32 @@ import java.math.BigDecimal;
 
 @Data
 @Builder
-@EqualsAndHashCode
-@GroupSequence({TourDto.class, TourDefaultAnnotations.class, TourCustomAnnotations.class})
-@UniqueTourConstraint(groups = {TourCustomAnnotations.class, TourPutUpdate.class})
 public class TourDto {
-    @EqualsAndHashCode.Exclude
     private Long id;
 
-    @EqualsAndHashCode.Include
-    @NotNull(message = "Tour name is a mandatory field", groups = {TourPutUpdate.class, TourDefaultAnnotations.class})
+    @NotNull(message = "Tour name is a mandatory field")
     private String tourName;
 
-    @EqualsAndHashCode.Include
-    @NotNull(message = "Price is a mandatory field", groups = {TourPutUpdate.class, TourDefaultAnnotations.class})
+    @NotNull(message = "Price is a mandatory field")
     private BigDecimal price;
 
-    @EqualsAndHashCode.Exclude
-    @NotNull(message = "Number of tours is a mandatory field",
-            groups = {TourPutUpdate.class, TourDefaultAnnotations.class})
-    @Min(value = 1, message = "Number of tours can't be less that 1"
-            , groups = {TourDefaultAnnotations.class,
-            TourPutUpdate.class})
+    @NotNull(message = "Number of tours is a mandatory field")
+    @Min(value = 1, message = "Number of tours can't be less that 1", groups = TourPatchUpdate.class)
     private Integer numberOfTours;
 
-    @EqualsAndHashCode.Include
-    @NotNull(message = "Number of participants is a mandatory field",
-            groups = {TourPutUpdate.class, TourDefaultAnnotations.class})
-    @Min(value = 1, message = "Number of participants can't be less that 1"
-            , groups = {TourDefaultAnnotations.class,
-            TourPutUpdate.class,})
+    @NotNull(message = "Number of participants is a mandatory field")
+    @Min(value = 1, message = "Number of participants can't be less that 1", groups = TourPatchUpdate.class)
     private Integer numberOfParticipants;
 
-    @EqualsAndHashCode.Exclude
-    @NotNull(message = "Hot status is a mandatory field", groups = {TourPutUpdate.class, TourDefaultAnnotations.class})
+    @NotNull(message = "Hot status is a mandatory field")
     private Boolean isHot;
 
-    @EqualsAndHashCode.Include
-    @NotNull(message = "Hotel type is a mandatory field", groups = {TourPutUpdate.class, TourDefaultAnnotations.class})
+    @NotNull(message = "Hotel type is a mandatory field")
     private HotelType hotelType;
 
-    @EqualsAndHashCode.Include
-    @NotNull(message = "Tour type is a mandatory field", groups = {TourPutUpdate.class, TourDefaultAnnotations.class})
+    @NotNull(message = "Tour type is a mandatory field")
     private TourType tourType;
 
-    @Null(message = "Cannot set this field manually", groups = {TourDefaultAnnotations.class, TourPutUpdate.class})
+    @Null(message = "Cannot set this field manually")
     private Boolean isDeleted;
 }

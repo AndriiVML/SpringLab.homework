@@ -38,6 +38,8 @@ public interface UserApi {
     UserModel updateUser(@PathVariable String login,
                          @Validated(UserPutUpdate.class) @RequestBody UserDto userDto);
 
+
+
     @ApiOperation("Update user(patch) in database")
     @PatchMapping(value = "/{login}")
     UserModel applyPatchToUser(@PathVariable String login,

@@ -48,12 +48,9 @@ public class DiscountController implements DiscountApi {
         return discountAssembler.toModel(entity);
     }
 
-    /*
-     * Do not know how to validate inside method not as parameter @Valid
-     * */
 
-    @PatchMapping("/discount")
-    public DiscountDto applyPatchToDiscount(@RequestBody DiscountDto discountDto) {
+    @Override
+    public DiscountDto applyPatchToDiscount(DiscountDto discountDto) {
         log.info("Attempt to change discount: " + discountDto);
         DiscountDto discountFromDb = discountService.getDiscount(Util.DISCOUNT_ID);
         if (discountDto.getStep() == null) {
@@ -67,8 +64,7 @@ public class DiscountController implements DiscountApi {
         Set<ConstraintViolation<DiscountDto>> errors =
                 Validation.buildDefaultValidatorFactory().getValidator().validate(discountDto);
 
-
-        List<String> errorMessages = errors.stream().map(x -> x.getMessage()).collect(Collectors.toList());
+        List<String> errorMessages = errors.stream().map(ConstraintViolation::getMessage).collect(Collectors.toList());
         if (!errorMessages.isEmpty()) {
             throw new DiscountPatchException(errorMessages);
         }

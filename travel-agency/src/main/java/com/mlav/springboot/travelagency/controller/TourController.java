@@ -6,15 +6,11 @@ import com.mlav.springboot.travelagency.controller.assembler.TourAssembler;
 import com.mlav.springboot.travelagency.controller.model.TourModel;
 import com.mlav.springboot.travelagency.dto.TourDto;
 import com.mlav.springboot.travelagency.service.TourService;
-import com.mlav.springboot.travelagency.validation.tour.TourPutUpdate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.*;
 
 @RestController
@@ -99,42 +95,34 @@ public class TourController implements TourApi {
         }
     * */
 
+    @Override
+    public TourDto applyPatchToTour(long id, TourDto tourDto) {
 
-    /*
-     * Do not know how to valid after initialization all fields inside method
-     * maybe solution: create new Exception and trigger in this method as validation error
-     * */
-//
-//    @PatchMapping(value = "/{id}")
-//    public TourDto applyPatchToTour(@PathVariable long id,
-//                                    @Validated(TourPatchUpdate.class) @RequestBody TourDto tourDto) {
-//        log.info(String.format("Attempt to update tour with id=%d possibleUpdate: %s", id, tourDto));
-//        TourDto tourFromDb = tourService.getTour(id);
-//        if (tourDto.getTourName() == null) {
-//            tourDto.setTourName(tourFromDb.getTourName());
-//        }
-//        if (tourDto.getTourType() == null) {
-//            tourDto.setTourType(tourFromDb.getTourType());
-//        }
-//        if (tourDto.getHotelType() == null) {
-//            tourDto.setHotelType(tourFromDb.getHotelType());
-//        }
-//        if (tourDto.getNumberOfParticipants() == null) {
-//            tourDto.setNumberOfParticipants(tourFromDb.getNumberOfParticipants());
-//        }
-//        if(tourDto.getNumberOfTours()==null){
-//            tourDto.setNumberOfTours(tourFromDb.getNumberOfTours());
-//        }
-//        if (tourDto.getPrice() == null) {
-//            tourDto.setPrice(tourFromDb.getPrice());
-//        }
-//        if (tourDto.getIsHot() == null) {
-//            tourDto.setIsHot(tourFromDb.getIsHot());
-//        }
-//        return tourService.updateTour(id, tourDto);
-//    }
-
-    //maybe instead of patch patch only on hot status of tour like in UserController
+        log.info(String.format("Attempt to update tour with id=%d possibleUpdate: %s", id, tourDto));
+        TourDto tourFromDb = tourService.getTour(id);
+        if (tourDto.getTourName() == null) {
+            tourDto.setTourName(tourFromDb.getTourName());
+        }
+        if (tourDto.getTourType() == null) {
+            tourDto.setTourType(tourFromDb.getTourType());
+        }
+        if (tourDto.getHotelType() == null) {
+            tourDto.setHotelType(tourFromDb.getHotelType());
+        }
+        if (tourDto.getNumberOfParticipants() == null) {
+            tourDto.setNumberOfParticipants(tourFromDb.getNumberOfParticipants());
+        }
+        if (tourDto.getNumberOfTours() == null) {
+            tourDto.setNumberOfTours(tourFromDb.getNumberOfTours());
+        }
+        if (tourDto.getPrice() == null) {
+            tourDto.setPrice(tourFromDb.getPrice());
+        }
+        if (tourDto.getIsHot() == null) {
+            tourDto.setIsHot(tourFromDb.getIsHot());
+        }
+        return tourService.updateTour(id, tourDto);
+    }
 
 
     @Override

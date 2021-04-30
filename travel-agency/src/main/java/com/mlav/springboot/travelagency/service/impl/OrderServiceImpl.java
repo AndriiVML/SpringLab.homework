@@ -141,8 +141,13 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         tourPurchase.setId(Util.generateUniqueId());
         log.info("Attempt to make order: " + tourPurchase);
+
         tourPurchase = orderRepository.save(tourPurchase);
         log.info("New order: {}", tourPurchase);
+//        log.info("Attempt to decrease number of tours in tour:{}", tour);
+//        tour.setNumberOfTours(tourPurchase.getNumberOfTours() - tour.getNumberOfTours());
+//        tourRepository.save(tour);
+//        log.info("Tour is updated");
         log.info(String.format("Attempt to increase discount of user: %s after ordering tour", user));
         user = updateUserDiscount(user);
         userRepository.save(user);
