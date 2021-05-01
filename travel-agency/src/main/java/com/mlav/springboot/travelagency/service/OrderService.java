@@ -12,6 +12,8 @@ public interface OrderService {
 
     List<OrderDto> getAllOrders();
 
+    List<OrderDto> findPaginated(int pageNumber, int pageSize);
+
     List<OrderDto> getUserOrders(String login );
 
     OrderDto orderTour(OrderDto orderDto);

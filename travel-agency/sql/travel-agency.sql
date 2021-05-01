@@ -21,12 +21,12 @@ DROP TABLE IF EXISTS roles;
 
 CREATE TABLE roles(
 
-                      # id has the INTEGER type (other name is INT), it is the primary key
-        id INT NOT NULL PRIMARY KEY,
+# id has the INTEGER type (other name is INT), it is the primary key
+                      id INT NOT NULL PRIMARY KEY,
 
-                      # name has the VARCHAR type - a string with a variable length
-                          # names values should not be repeated (UNIQUE)
-                          role_name ENUM('admin','user','moderator')
+# name has the VARCHAR type - a string with a variable length
+# names values should not be repeated (UNIQUE)
+                      role_name ENUM('admin','user','moderator')
 );
 
 INSERT INTO roles VALUES(0, 'admin');
@@ -57,7 +57,7 @@ INSERT INTO account(login,password,role_id) VALUES('admin', 'pass',0);
 
 
 CREATE TABLE user_account(
-                             account_id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+                             account_id BIGINT NOT NULL PRIMARY KEY,
                              first_name VARCHAR(30) NOT NULL,
                              last_name VARCHAR(30) NOT NULL,
                              is_blocked BOOLEAN NOT NULL DEFAULT FALSE,
@@ -71,12 +71,12 @@ CREATE TABLE user_account(
 
 CREATE TABLE tour_type(
 
-                          # id has the INTEGER type (other name is INT), it is the primary key
-        id INT NOT NULL PRIMARY KEY,
+# id has the INTEGER type (other name is INT), it is the primary key
+                          id INT NOT NULL PRIMARY KEY,
 
-                          # name has the VARCHAR type - a string with a variable length
-                              # names values should not be repeated (UNIQUE)
-                              tour_type_name ENUM('shopping','excursion','vacation') NOT NULL
+# name has the VARCHAR type - a string with a variable length
+# names values should not be repeated (UNIQUE)
+                          tour_type_name ENUM('shopping','excursion','vacation') NOT NULL
 );
 
 
@@ -88,12 +88,12 @@ INSERT INTO tour_type VALUES (2,'shopping');
 
 CREATE TABLE hotel_type(
 
-                           # id has the INTEGER type (other name is INT), it is the primary key
-        id INT NOT NULL PRIMARY KEY,
+# id has the INTEGER type (other name is INT), it is the primary key
+                           id INT NOT NULL PRIMARY KEY,
 
-                           # name has the VARCHAR type - a string with a variable length
-                               # names values should not be repeated (UNIQUE)
-                               hotel_type_name ENUM('*','**','***','****','*****') NOT NULL
+# name has the VARCHAR type - a string with a variable length
+# names values should not be repeated (UNIQUE)
+                           hotel_type_name ENUM('*','**','***','****','*****') NOT NULL
 
 );
 
@@ -120,15 +120,17 @@ CREATE TABLE tour(
                          ON DELETE CASCADE
                          ON UPDATE RESTRICT
 );
+CREATE UNIQUE INDEX tour_unique
+    ON tour(tour_name,tour_type_id,hotel_type_id,number_of_participants);
 
 CREATE TABLE statuses(
 
-                         # id has the INTEGER type (other name is INT), it is the primary key
-        id INT NOT NULL PRIMARY KEY,
+# id has the INTEGER type (other name is INT), it is the primary key
+                         id INT NOT NULL PRIMARY KEY,
 
-                         # name has the VARCHAR type - a string with a variable length
-                             # names values should not be repeated (UNIQUE)
-                             status_name ENUM('paid','registered','cancelled') NOT NULL
+# name has the VARCHAR type - a string with a variable length
+# names values should not be repeated (UNIQUE)
+                         status_name ENUM('paid','registered','cancelled') NOT NULL
 );
 
 INSERT INTO statuses VALUES(0, 'registered');
@@ -143,7 +145,7 @@ CREATE TABLE discount(
 );
 
 #default discount
-INSERT INTO discount(id,step,max) VALUES (1,5,20);
+INSERT INTO discount(step,max) VALUES (5,20);
 
 
 
@@ -165,4 +167,5 @@ CREATE TABLE tour_purchase(
                                   ON DELETE CASCADE
                                   ON UPDATE CASCADE
 );
+
 

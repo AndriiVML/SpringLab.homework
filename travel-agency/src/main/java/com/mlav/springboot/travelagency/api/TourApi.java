@@ -21,6 +21,11 @@ public interface TourApi {
     @ResponseStatus(HttpStatus.OK)
     List<TourModel> getAllTours();
 
+    @ApiOperation("Get page of tours from database")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/{pageNumber}/{pageSize}")
+    List<TourModel> getPaginated(@PathVariable int pageNumber, @PathVariable int pageSize);
+
     @ApiOperation("Get tour from database")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}")

@@ -17,10 +17,15 @@ import java.util.List;
 @Api(tags = "User management API")
 @RequestMapping("/api/v1/users")
 public interface UserApi {
-    @ApiOperation("Get user from database")
+    @ApiOperation("Get users from database")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     List<UserModel> getAllUsers();
+
+    @ApiOperation("Get page of users from database")
+    @GetMapping("/{pageNumber}/{pageSize}")
+    @ResponseStatus(HttpStatus.OK)
+    List<UserModel> getPaginated(@PathVariable int pageNumber, @PathVariable int pageSize);
 
     @ApiOperation("Get user from database")
     @ResponseStatus(HttpStatus.OK)
@@ -37,7 +42,6 @@ public interface UserApi {
     @PutMapping(value = "/{login}")
     UserModel updateUser(@PathVariable String login,
                          @Validated(UserPutUpdate.class) @RequestBody UserDto userDto);
-
 
 
     @ApiOperation("Update user(patch) in database")

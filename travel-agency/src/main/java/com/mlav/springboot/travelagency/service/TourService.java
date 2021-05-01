@@ -9,6 +9,8 @@ public interface TourService {
 
     List<TourDto> getAllTours();
 
+    List<TourDto> findPaginated(int pageNumber, int pageSize);
+
     TourDto createTour(TourDto tourDto);
 
     void deleteTour(long id);

@@ -1,11 +1,9 @@
 package com.mlav.springboot.travelagency.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Builder
@@ -31,6 +29,10 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<TourPurchase> orders;
 
     public void setId(Long id) {
         this.id = id;

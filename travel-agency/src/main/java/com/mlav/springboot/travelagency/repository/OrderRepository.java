@@ -3,6 +3,8 @@ package com.mlav.springboot.travelagency.repository;
 import com.mlav.springboot.travelagency.model.Status;
 import com.mlav.springboot.travelagency.model.entity.TourPurchase;
 import com.mlav.springboot.travelagency.model.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

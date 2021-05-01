@@ -20,6 +20,11 @@ public interface OrderApi {
     @ResponseStatus(HttpStatus.OK)
     List<OrderModel> getAllOrders();
 
+    @ApiOperation("Get page of orders from database")
+    @GetMapping("/{pageNumber}/{pageSize}")
+    @ResponseStatus(HttpStatus.OK)
+    List<OrderModel> getPaginated(@PathVariable int pageNumber, @PathVariable int pageSize);
+
     @ApiOperation("Get all orders for user")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/users/{login}")

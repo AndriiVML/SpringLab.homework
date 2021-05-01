@@ -38,6 +38,12 @@ public class TourController implements TourApi {
     }
 
     @Override
+    public List<TourModel> getPaginated(int pageNumber, int pageSize) {
+        List<TourDto> allToursInPage = tourService.findPaginated(pageNumber, pageSize);
+        return mapListTourDtoToListTourModel(allToursInPage);
+    }
+
+    @Override
     public TourModel getTour(long id) {
         log.info("Attempt to get tour with id=" + id);
         TourDto entity = tourService.getTour(id);

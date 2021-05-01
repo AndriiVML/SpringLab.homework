@@ -12,6 +12,9 @@ import com.mlav.springboot.travelagency.repository.UserRepository;
 import com.mlav.springboot.travelagency.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -73,6 +76,16 @@ public class UserServiceImpl implements UserService {
         log.info("all users: {}", users);
         List<UserDto> userDtos = new ArrayList<>();
         for (User u : users) {
+            userDtos.add(mapUserToUserDto(u));
+        }
+        return userDtos;
+    }
+
+    @Override
+    public List<UserDto> findPaginated(int pageNumber, int pageSize) {
+        Pageable paging = PageRequest.of(pageNumber, pageSize);
+        List<UserDto> userDtos = new ArrayList<>();
+        for (User u : userRepository.findAll(paging).toList()) {
             userDtos.add(mapUserToUserDto(u));
         }
         return userDtos;

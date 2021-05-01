@@ -1,14 +1,10 @@
 package com.mlav.springboot.travelagency.model.entity;
 
-import com.mlav.springboot.travelagency.model.HotelType;
-import com.mlav.springboot.travelagency.model.TourType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Entity
@@ -34,4 +30,8 @@ public class Tour {
     private Integer hotelTypeId;
     @Column(name = "tour_type_id")
     private Integer tourTypeId;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tour", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<TourPurchase> orders;
 }

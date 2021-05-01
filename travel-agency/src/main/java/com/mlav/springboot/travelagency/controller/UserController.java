@@ -37,6 +37,12 @@ public class UserController implements UserApi {
         return mapListUserDtoToListUserModel(allUsers);
     }
 
+    @Override
+    public List<UserModel> getPaginated(int pageNumber, int pageSize) {
+        List<UserDto> allUsersInPage = userService.findPaginated(pageNumber, pageSize);
+        return mapListUserDtoToListUserModel(allUsersInPage);
+    }
+
     private List<UserModel> mapListUserDtoToListUserModel(List<UserDto> userDtos) {
         List<UserModel> userModels = new ArrayList<>(userDtos.size());
         for (UserDto item : userDtos) {

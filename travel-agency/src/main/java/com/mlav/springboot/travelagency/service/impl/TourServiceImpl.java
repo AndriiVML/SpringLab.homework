@@ -3,13 +3,14 @@ package com.mlav.springboot.travelagency.service.impl;
 import com.mlav.springboot.travelagency.exception.TourNotFoundException;
 import com.mlav.springboot.travelagency.model.HotelType;
 import com.mlav.springboot.travelagency.model.TourType;
-import com.mlav.springboot.travelagency.util.Util;
 import com.mlav.springboot.travelagency.dto.TourDto;
 import com.mlav.springboot.travelagency.model.entity.Tour;
 import com.mlav.springboot.travelagency.repository.TourRepository;
 import com.mlav.springboot.travelagency.service.TourService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -50,7 +51,6 @@ public class TourServiceImpl implements TourService {
     }
 
 
-
     @Override
     public TourDto getTour(long id) {
         log.info("Attempt to get tour with id=" + id);
@@ -70,6 +70,17 @@ public class TourServiceImpl implements TourService {
         log.info("All tours: {}", tours);
         return tourDtos;
     }
+
+    @Override
+    public List<TourDto> findPaginated(int pageNumber, int pageSize) {
+        Pageable paging = PageRequest.of(pageNumber, pageSize);
+        List<TourDto> tourDtos = new ArrayList<>();
+        for (Tour t : tourRepository.findAll(paging).toList()) {
+            tourDtos.add(mapTourToTourDto(t));
+        }
+        return tourDtos;
+    }
+
 
     @Override
     public TourDto createTour(TourDto tourDto) {

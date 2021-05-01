@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @Table(name = "tour_purchase")
+//AllArgsConstructor and NoArgsConstructor is for swagger 2
 @AllArgsConstructor
 @NoArgsConstructor
 public class TourPurchase {

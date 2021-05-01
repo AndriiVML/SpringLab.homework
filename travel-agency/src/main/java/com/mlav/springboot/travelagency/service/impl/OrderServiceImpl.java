@@ -17,6 +17,8 @@ import com.mlav.springboot.travelagency.service.OrderService;
 import com.mlav.springboot.travelagency.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -102,6 +104,16 @@ public class OrderServiceImpl implements OrderService {
             orderDtos.add(mapTourPurchaseToOrderDto(tp));
         }
         log.info("All orders: {}", orders);
+        return orderDtos;
+    }
+
+    @Override
+    public List<OrderDto> findPaginated(int pageNumber, int pageSize) {
+        Pageable paging = PageRequest.of(pageNumber, pageSize);
+        List<OrderDto> orderDtos = new ArrayList<>();
+        for (TourPurchase tp : orderRepository.findAll(paging).toList()) {
+            orderDtos.add(mapTourPurchaseToOrderDto(tp));
+        }
         return orderDtos;
     }
 

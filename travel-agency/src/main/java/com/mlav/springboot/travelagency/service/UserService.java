@@ -10,6 +10,8 @@ public interface UserService {
 
     List<UserDto> getAllUsers();
 
+    List<UserDto> findPaginated(int pageNumber, int pageSize);
+
     UserDto createUser(UserDto userDto);
 
     void deleteUser(String login);

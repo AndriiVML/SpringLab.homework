@@ -32,6 +32,11 @@ public class OrderController implements OrderApi {
         return mapListOrderDtoToListOrderModel(allOrders);
     }
 
+    @Override
+    public List<OrderModel> getPaginated(int pageNumber, int pageSize) {
+        List<OrderDto> allOrdersInPage = orderService.findPaginated(pageNumber, pageSize);
+        return mapListOrderDtoToListOrderModel(allOrdersInPage);
+    }
 
     private List<OrderModel> mapListOrderDtoToListOrderModel(List<OrderDto> orderDtos) {
         List<OrderModel> orderModels = new ArrayList<>(orderDtos.size());
