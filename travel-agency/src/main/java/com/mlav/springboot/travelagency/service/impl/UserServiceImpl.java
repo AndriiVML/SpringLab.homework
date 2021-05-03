@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -82,8 +83,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> findPaginated(int pageNumber, int pageSize) {
-        Pageable paging = PageRequest.of(pageNumber, pageSize);
+    public List<UserDto> findPaginated(int pageNumber, int pageSize, List<Sort.Order> orders) {
+        Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by(orders));
         List<UserDto> userDtos = new ArrayList<>();
         for (User u : userRepository.findAll(paging).toList()) {
             userDtos.add(mapUserToUserDto(u));

@@ -23,7 +23,8 @@ public interface OrderApi {
     @ApiOperation("Get page of orders from database")
     @GetMapping("/{pageNumber}/{pageSize}")
     @ResponseStatus(HttpStatus.OK)
-    List<OrderModel> getPaginated(@PathVariable int pageNumber, @PathVariable int pageSize);
+    List<OrderModel> getPaginatedAndSorted(@PathVariable int pageNumber, @PathVariable int pageSize,
+                                           @RequestParam String[] sort);
 
     @ApiOperation("Get all orders for user")
     @ResponseStatus(HttpStatus.OK)

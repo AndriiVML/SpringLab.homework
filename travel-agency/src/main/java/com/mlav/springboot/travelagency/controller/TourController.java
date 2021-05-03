@@ -49,7 +49,7 @@ String[] sort is also an array with 2 elements: [“column1, direction1”, “c
 
 
     @Override
-    public List<TourModel> getPaginated(int pageNumber, int pageSize, String[] sort) {
+    public List<TourModel> getPaginatedAndSorted(int pageNumber, int pageSize, String[] sort) {
 
         List<Sort.Order> orders = Util.getOrdersFromStringArr(sort);
         List<TourDto> allToursInPage = tourService.findPaginated(pageNumber, pageSize, orders);

@@ -3,6 +3,7 @@ package com.mlav.springboot.travelagency.controller.assembler;
 import com.mlav.springboot.travelagency.controller.OrderController;
 import com.mlav.springboot.travelagency.controller.model.OrderModel;
 import com.mlav.springboot.travelagency.dto.OrderDto;
+import com.mlav.springboot.travelagency.util.Util;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,9 @@ public class OrderAssembler extends RepresentationModelAssemblerSupport<OrderDto
         Link get = linkTo(methodOn(OrderController.class)
                 .getOrder(entity.getId()))
                 .withRel("get");
+        Link getPaginatedAndSorted = linkTo(methodOn(OrderController.class)
+                .getPaginatedAndSorted(0, Util.PAGE_SIZE, new String[]{"dateTimeOfPurchase,desc"}))
+                .withRel("getPaginatedAndSorted");
         Link getAll = linkTo(methodOn(OrderController.class)
                 .getAllOrders())
                 .withRel("getAll");
@@ -37,7 +41,7 @@ public class OrderAssembler extends RepresentationModelAssemblerSupport<OrderDto
                 .deleteOrder(entity.getId()))
                 .withRel("delete");
 
-        orderModel.add(get, getAll, order, changeStatus, delete);
+        orderModel.add(get, getPaginatedAndSorted, getAll, order, changeStatus, delete);
         return orderModel;
     }
 }

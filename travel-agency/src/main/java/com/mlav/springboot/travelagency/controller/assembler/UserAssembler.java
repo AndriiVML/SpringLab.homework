@@ -3,6 +3,7 @@ package com.mlav.springboot.travelagency.controller.assembler;
 import com.mlav.springboot.travelagency.controller.UserController;
 import com.mlav.springboot.travelagency.controller.model.UserModel;
 import com.mlav.springboot.travelagency.dto.UserDto;
+import com.mlav.springboot.travelagency.util.Util;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,9 @@ public class UserAssembler extends RepresentationModelAssemblerSupport<UserDto, 
         Link getAll = linkTo(methodOn(UserController.class)
                 .getAllUsers())
                 .withRel("getAll");
+        Link getPaginated = linkTo(methodOn(UserController.class)
+                .getPaginatedAndSorted(0, Util.PAGE_SIZE, new String[]{"id,desc"}))
+                .withRel("getPaginated");
         Link create = linkTo(methodOn(UserController.class)
                 .createUser(entity))
                 .withRel("create");
@@ -42,7 +46,7 @@ public class UserAssembler extends RepresentationModelAssemblerSupport<UserDto, 
                 .changeBlockStatus(entity.getLogin()))
                 .withRel("change-block-status");
 
-        userModel.add(get, getAll, create, put, patch, delete, changeBlockStatus);
+        userModel.add(get, getPaginated, getAll, create, put, patch, delete, changeBlockStatus);
         return userModel;
     }
 }

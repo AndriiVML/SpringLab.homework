@@ -24,8 +24,8 @@ public interface TourApi {
     @ApiOperation("Get page of tours from database")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{pageNumber}/{pageSize}")
-    List<TourModel> getPaginated(@PathVariable int pageNumber, @PathVariable int pageSize,
-                                 @RequestParam(defaultValue = "isHot,desc") String[] sort);
+    List<TourModel> getPaginatedAndSorted(@PathVariable int pageNumber, @PathVariable int pageSize,
+                                          @RequestParam(defaultValue = "isHot,desc") String[] sort);
 
     @ApiOperation("Get tour from database")
     @ResponseStatus(HttpStatus.OK)

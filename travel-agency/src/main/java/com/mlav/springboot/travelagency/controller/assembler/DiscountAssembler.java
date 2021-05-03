@@ -22,10 +22,13 @@ public class DiscountAssembler extends RepresentationModelAssemblerSupport<Disco
                 .getDiscount())
                 .withRel("get");
 
-        Link update = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(DiscountController.class)
+        Link updatePut = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(DiscountController.class)
                 .updateDiscount(entity))
-                .withRel("update");
-        discountModel.add(get,update);
+                .withRel("put");
+        Link updatePatch = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(DiscountController.class)
+                .applyPatchToDiscount(entity))
+                .withRel("patch");
+        discountModel.add(get, updatePut, updatePatch);
         return discountModel;
     }
 }

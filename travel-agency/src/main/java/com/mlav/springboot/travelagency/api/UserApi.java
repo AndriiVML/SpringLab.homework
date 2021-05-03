@@ -25,7 +25,8 @@ public interface UserApi {
     @ApiOperation("Get page of users from database")
     @GetMapping("/{pageNumber}/{pageSize}")
     @ResponseStatus(HttpStatus.OK)
-    List<UserModel> getPaginated(@PathVariable int pageNumber, @PathVariable int pageSize);
+    List<UserModel> getPaginatedAndSorted(@PathVariable int pageNumber, @PathVariable int pageSize,
+                                          @RequestParam String[] sort);
 
     @ApiOperation("Get user from database")
     @ResponseStatus(HttpStatus.OK)

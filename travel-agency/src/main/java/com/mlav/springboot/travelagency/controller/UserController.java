@@ -11,6 +11,7 @@ import com.mlav.springboot.travelagency.validation.user.UserPutUpdate;
 import com.mlav.springboot.travelagency.validation.user.UserRegister;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -38,8 +39,9 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public List<UserModel> getPaginated(int pageNumber, int pageSize) {
-        List<UserDto> allUsersInPage = userService.findPaginated(pageNumber, pageSize);
+    public List<UserModel> getPaginatedAndSorted(int pageNumber, int pageSize, String[] sort) {
+        List<Sort.Order> orders = Util.getOrdersFromStringArr(sort);
+        List<UserDto> allUsersInPage = userService.findPaginated(pageNumber, pageSize,orders);
         return mapListUserDtoToListUserModel(allUsersInPage);
     }
 

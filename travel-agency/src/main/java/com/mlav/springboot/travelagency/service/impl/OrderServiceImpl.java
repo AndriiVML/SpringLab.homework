@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -108,8 +109,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> findPaginated(int pageNumber, int pageSize) {
-        Pageable paging = PageRequest.of(pageNumber, pageSize);
+    public List<OrderDto> findPaginated(int pageNumber, int pageSize, List<Sort.Order> orders) {
+        Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by(orders));
         List<OrderDto> orderDtos = new ArrayList<>();
         for (TourPurchase tp : orderRepository.findAll(paging).toList()) {
             orderDtos.add(mapTourPurchaseToOrderDto(tp));
