@@ -6,8 +6,10 @@ import com.mlav.springboot.travelagency.controller.assembler.TourAssembler;
 import com.mlav.springboot.travelagency.controller.model.TourModel;
 import com.mlav.springboot.travelagency.dto.TourDto;
 import com.mlav.springboot.travelagency.service.TourService;
+import com.mlav.springboot.travelagency.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,17 +33,29 @@ public class TourController implements TourApi {
 
 
     @Override
-    public List<TourModel> getAllTours() {
+    public List<TourModel> getAllTours(String[] sort) {
         log.info("Attempt to get all tours");
-        List<TourDto> allTours = tourService.getAllTours();
+        List<Sort.Order> orders = Util.getOrdersFromStringArr(sort);
+        List<TourDto> allTours = tourService.getAllTours(orders);
         return mapListTourDtoToListTourModel(allTours);
     }
 
+    /*
+    ?sort=column1,direction1: sorting single column
+String[] sort is an array with 2 elements: [“column1”, “direction1”]
+?sort=column1,direction1&sort=column2,direction2: sorting multiple columns
+String[] sort is also an array with 2 elements: [“column1, direction1”, “column2, direction2”]
+    * */
+
+
     @Override
-    public List<TourModel> getPaginated(int pageNumber, int pageSize) {
-        List<TourDto> allToursInPage = tourService.findPaginated(pageNumber, pageSize);
+    public List<TourModel> getPaginated(int pageNumber, int pageSize, String[] sort) {
+
+        List<Sort.Order> orders = Util.getOrdersFromStringArr(sort);
+        List<TourDto> allToursInPage = tourService.findPaginated(pageNumber, pageSize, orders);
         return mapListTourDtoToListTourModel(allToursInPage);
     }
+
 
     @Override
     public TourModel getTour(long id) {

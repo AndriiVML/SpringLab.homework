@@ -19,12 +19,13 @@ public interface TourApi {
     @ApiOperation("Get all tours from database")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    List<TourModel> getAllTours();
+    List<TourModel> getAllTours(@RequestParam(defaultValue = "isHot,desc") String[] sort);
 
     @ApiOperation("Get page of tours from database")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{pageNumber}/{pageSize}")
-    List<TourModel> getPaginated(@PathVariable int pageNumber, @PathVariable int pageSize);
+    List<TourModel> getPaginated(@PathVariable int pageNumber, @PathVariable int pageSize,
+                                 @RequestParam(defaultValue = "isHot,desc") String[] sort);
 
     @ApiOperation("Get tour from database")
     @ResponseStatus(HttpStatus.OK)

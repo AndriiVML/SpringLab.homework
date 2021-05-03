@@ -6,6 +6,7 @@ import com.mlav.springboot.travelagency.model.ErrorType;
 import lombok.extern.slf4j.Slf4j;
 import com.mlav.springboot.travelagency.exception.ValidationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +41,20 @@ public class ErrorHandlingController {
                 .collect(Collectors.toList());
     }
 
+    @ExceptionHandler(PropertyReferenceException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handlePropertyReferenceException(PropertyReferenceException ex) {
+        log.error("handlePropertyReferenceException: message {}", ex.getMessage());
+        return new Error(ex.getMessage(), ErrorType.VALIDATION_ERROR_TYPE, LocalDateTime.now());
+    }
+
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.error("handleIllegalArgumentException: message {}", ex.getMessage());
+        return new Error(ex.getMessage(), ErrorType.VALIDATION_ERROR_TYPE, LocalDateTime.now());
+    }
 
     @ExceptionHandler(ServiceException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

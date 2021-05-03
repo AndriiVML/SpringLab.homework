@@ -1,6 +1,7 @@
 package com.mlav.springboot.travelagency.repository;
 
 import com.mlav.springboot.travelagency.model.entity.Tour;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -24,5 +25,6 @@ public interface TourRepository extends JpaRepository<Tour, Long> {
     Optional<Tour> findByIdAndIsDeletedFalse(Long aLong);
 
     List<Tour> findAllByIsDeletedFalse();
+    List<Tour> findAllByIsDeletedFalse(Sort sort);
     List<Tour> findAllByIsDeletedTrue();
 }

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -60,9 +61,9 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<TourDto> getAllTours() {
+    public List<TourDto> getAllTours(List<Sort.Order> orders) {
         log.info("Attempt to get all tours");
-        List<Tour> tours = tourRepository.findAllByIsDeletedFalse();
+        List<Tour> tours = tourRepository.findAllByIsDeletedFalse(Sort.by(orders));
         List<TourDto> tourDtos = new ArrayList<>();
         for (Tour t : tours) {
             tourDtos.add(mapTourToTourDto(t));
@@ -72,8 +73,8 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<TourDto> findPaginated(int pageNumber, int pageSize) {
-        Pageable paging = PageRequest.of(pageNumber, pageSize);
+    public List<TourDto> findPaginated(int pageNumber, int pageSize, List<Sort.Order> orders) {
+        Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by(orders));
         List<TourDto> tourDtos = new ArrayList<>();
         for (Tour t : tourRepository.findAll(paging).toList()) {
             tourDtos.add(mapTourToTourDto(t));

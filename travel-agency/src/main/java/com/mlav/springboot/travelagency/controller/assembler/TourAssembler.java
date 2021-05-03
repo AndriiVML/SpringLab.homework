@@ -25,7 +25,7 @@ public class TourAssembler extends RepresentationModelAssemblerSupport<TourDto, 
                 .getTour(entity.getId()))
                 .withRel("get");
         Link getAll = linkTo(methodOn(TourController.class)
-                .getAllTours())
+                .getAllTours(new String[]{"isHot,desc"}))
                 .withRel("getAll");
         Link create = linkTo(methodOn(TourController.class)
                 .createTour(entity))
