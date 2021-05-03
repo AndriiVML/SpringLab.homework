@@ -11,6 +11,11 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@NamedQuery(name = "Tour.findAllByIsDeletedFalse",
+        query = "SELECT t FROM Tour t WHERE t.isDeleted=false")
+@NamedNativeQuery(name = "Tour.findByIdAndIsDeletedFalse",
+        query = "SELECT * FROM Tour  WHERE id = ?1 AND is_deleted = false ",
+        resultClass = Tour.class)
 public class Tour {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
