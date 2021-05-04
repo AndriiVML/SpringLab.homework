@@ -8,6 +8,7 @@ import com.mlav.springboot.travelagency.exception.ValidationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -88,6 +89,14 @@ public class ErrorHandlingController {
             message = ex.getMessage();
         }
         return new Error(message, ErrorType.VALIDATION_ERROR_TYPE, LocalDateTime.now());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        //instead of required type input of another type
+        log.error("handleHttpMessageNotReadableException: message {}", ex.getMessage());
+        return new Error(ex.getMessage(), ErrorType.VALIDATION_ERROR_TYPE, LocalDateTime.now());
     }
 
 
