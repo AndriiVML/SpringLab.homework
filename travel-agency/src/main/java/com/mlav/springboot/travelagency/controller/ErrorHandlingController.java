@@ -53,7 +53,13 @@ public class ErrorHandlingController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Error handleIllegalArgumentException(IllegalArgumentException ex) {
         log.error("handleIllegalArgumentException: message {}", ex.getMessage());
-        return new Error(ex.getMessage(), ErrorType.VALIDATION_ERROR_TYPE, LocalDateTime.now());
+        String message = ex.getMessage();
+        String searchFor = "Status.";
+        if (ex.getMessage().contains("enum")) {
+            message = "Unknown status " + ex.getMessage()
+                    .substring(message.lastIndexOf(searchFor) + searchFor.length());
+        }
+        return new Error(message, ErrorType.VALIDATION_ERROR_TYPE, LocalDateTime.now());
     }
 
     @ExceptionHandler(ServiceException.class)

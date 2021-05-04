@@ -61,4 +61,12 @@ public class Util {
         }
     }
 
+    public static int getDecreasedTours(int currentNumberOfTours, int numberOfToursToDecrease) {
+        int difference = currentNumberOfTours - numberOfToursToDecrease;
+        if (difference < 0) {
+            throw new IllegalArgumentException("Cannot order tour. There are not available tours with such a number");
+        }
+        return difference;
+    }
+
 }

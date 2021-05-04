@@ -7,13 +7,10 @@ import com.mlav.springboot.travelagency.dto.OrderDto;
 import com.mlav.springboot.travelagency.model.Status;
 import com.mlav.springboot.travelagency.service.OrderService;
 import com.mlav.springboot.travelagency.util.Util;
-import com.mlav.springboot.travelagency.validation.order.OrderBasicInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -37,7 +34,7 @@ public class OrderController implements OrderApi {
     @Override
     public List<OrderModel> getPaginatedAndSorted(int pageNumber, int pageSize, String[] sort) {
         List<Sort.Order> orders = Util.getOrdersFromStringArr(sort);
-        List<OrderDto> allOrdersInPage = orderService.findPaginated(pageNumber, pageSize,orders);
+        List<OrderDto> allOrdersInPage = orderService.findPaginatedAndSorted(pageNumber, pageSize,orders);
         return mapListOrderDtoToListOrderModel(allOrdersInPage);
     }
 

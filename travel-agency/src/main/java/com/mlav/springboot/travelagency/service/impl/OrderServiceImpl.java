@@ -37,36 +37,12 @@ public class OrderServiceImpl implements OrderService {
     private final TourRepository tourRepository;
     private final DiscountRepository discountRepository;
 
-//
-//    private TourPurchaseDto mapTourPurchaseToTourPurchaseDto(TourPurchase tourPurchase) {
-//        return TourPurchaseDto.builder()
-//                .user(tourPurchase.getUser())
-//                .tour(tourPurchase.getTour())
-//                .actualPrice(tourPurchase.getActualPrice())
-//                .dateTimeOfPurchase(tourPurchase.getDateTimeOfPurchase())
-//                .status(tourPurchase.getStatus())
-//                .numberOfTours(tourPurchase.getNumberOfTours())
-//                .id(tourPurchase.getId())
-//                .build();
-//    }
-//
-//    private TourPurchase mapTourPurchaseDtoToTourPurchase(TourPurchaseDto tourPurchaseDto) {
-//        TourPurchase tourPurchase = TourPurchase.builder()
-//                .user(tourPurchaseDto.getUser())
-//                .tour(tourPurchaseDto.getTour())
-//                .actualPrice(tourPurchaseDto.getActualPrice())
-//                .dateTimeOfPurchase(tourPurchaseDto.getDateTimeOfPurchase())
-//                .status(tourPurchaseDto.getStatus())
-//                .numberOfTours(tourPurchaseDto.getNumberOfTours())
-//                .build();
-//        tourPurchase.setId(tourPurchaseDto.getId());
-//        return tourPurchase;
-//    }
-
     private TourPurchase mapOrderDtoToTourPurchase(OrderDto orderDto) {
         TourPurchase tourPurchase = TourPurchase.builder()
-//                .user(userRepository.getUser(orderDto.getUserLogin()))
-//                .tour(tourRepository.getTour(orderDto.getTourId()))
+                .user(userRepository.findByAccount_Login(orderDto.getUserLogin())
+                        .orElseThrow(() -> new UserNotFoundException("User cannot order tour. User does not exist")))
+                .tour(tourRepository.findById(orderDto.getTourId())
+                        .orElseThrow(() -> new TourNotFoundException("User cannot order tour. Tour does not exist")))
                 .actualPrice(orderDto.getActualPrice())
                 .dateTimeOfPurchase(orderDto.getDateTimeOfPurchase())
                 .statusId(orderDto.getStatus().ordinal())
@@ -109,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> findPaginated(int pageNumber, int pageSize, List<Sort.Order> orders) {
+    public List<OrderDto> findPaginatedAndSorted(int pageNumber, int pageSize, List<Sort.Order> orders) {
         Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by(orders));
         List<OrderDto> orderDtos = new ArrayList<>();
         for (TourPurchase tp : orderRepository.findAll(paging).toList()) {
@@ -157,10 +133,10 @@ public class OrderServiceImpl implements OrderService {
 
         tourPurchase = orderRepository.save(tourPurchase);
         log.info("New order: {}", tourPurchase);
-//        log.info("Attempt to decrease number of tours in tour:{}", tour);
-//        tour.setNumberOfTours(tourPurchase.getNumberOfTours() - tour.getNumberOfTours());
-//        tourRepository.save(tour);
-//        log.info("Tour is updated");
+        log.info("Attempt to decrease number of tours in tour:{}", tour);
+        tour.setNumberOfTours(Util.getDecreasedTours(tour.getNumberOfTours(), tourPurchase.getNumberOfTours()));
+        tourRepository.save(tour);
+        log.info("Tour is updated");
         log.info(String.format("Attempt to increase discount of user: %s after ordering tour", user));
         user = updateUserDiscount(user);
         userRepository.save(user);
@@ -203,6 +179,13 @@ public class OrderServiceImpl implements OrderService {
         order.setStatusId(status.ordinal());
         order = orderRepository.save(order);
         log.info(String.format("Status is changed from %s to %s in order: %s", previousStatus, status, order));
+        if (Status.getStatus(order) == Status.CANCELLED) {
+            Tour tour = order.getTour();
+            log.info("Attempt to increase number of tours in tour: {}", tour);
+            tour.setNumberOfTours(tour.getNumberOfTours() + order.getNumberOfTours());
+            tourRepository.save(tour);
+            log.info("Tour is updated");
+        }
         return mapTourPurchaseToOrderDto(order);
     }
 

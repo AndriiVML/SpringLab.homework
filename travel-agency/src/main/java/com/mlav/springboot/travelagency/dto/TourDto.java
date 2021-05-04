@@ -6,9 +6,7 @@ import com.mlav.springboot.travelagency.validation.tour.TourPatchUpdate;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
 @Data
@@ -20,6 +18,8 @@ public class TourDto {
     private String tourName;
 
     @NotNull(message = "Price is a mandatory field")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price can't be zero or less than zero")
+    @DecimalMax(value = "99999.99", message = "Price can't be more than 100_000.00 or equal")
     private BigDecimal price;
 
     @NotNull(message = "Number of tours is a mandatory field")

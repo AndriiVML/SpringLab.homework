@@ -13,7 +13,7 @@ public interface OrderService {
 
     List<OrderDto> getAllOrders();
 
-    List<OrderDto> findPaginated(int pageNumber, int pageSize, List<Sort.Order> orders);
+    List<OrderDto> findPaginatedAndSorted(int pageNumber, int pageSize, List<Sort.Order> orders);
 
     List<OrderDto> getUserOrders(String login);
 

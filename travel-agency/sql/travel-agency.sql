@@ -112,7 +112,7 @@ CREATE TABLE tour(
                      hotel_type_id INT NOT NULL,
                      number_of_participants INTEGER UNSIGNED NOT NULL DEFAULT 1,
                      number_of_tours INTEGER UNSIGNED NOT NULL DEFAULT 100,
-                     price DECIMAL(6,2) NOT NULL,
+                     price DECIMAL(8,2) NOT NULL,
                      is_hot TINYINT(1) NOT NULL DEFAULT FALSE,
                      is_deleted TINYINT(1) NOT NULL DEFAULT FALSE,
                      FOREIGN KEY (tour_type_id) REFERENCES tour_type(id),
@@ -151,7 +151,7 @@ INSERT INTO discount(step,max) VALUES (5,20);
 
 CREATE TABLE tour_purchase(
                               id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                              price DECIMAL(6,2) NOT NULL,
+                              price DECIMAL(8,2) NOT NULL,
                               status_id INT NOT NULL DEFAULT 0,
                               account_user_id BIGINT NOT NULL,
                               tour_id BIGINT NOT NULL,
