@@ -5,6 +5,7 @@ import com.mlav.springboot.travelagency.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
 
@@ -15,6 +16,7 @@ import org.springframework.hateoas.RepresentationModel;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserModel extends RepresentationModel<UserModel> {
     @JsonUnwrapped
     //userDto go upper in serialization no nesting
